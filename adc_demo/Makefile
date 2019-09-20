@@ -10,7 +10,7 @@ help:
 	@echo
 
 SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v
-NEXTPNR_DIR = /home/matt/work/fpga/nextpnr
+NEXTPNR_DIR = ~/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
@@ -35,5 +35,10 @@ debug:
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES)
 	vvp top_debug
 	gtkwave test.vcd gtk-top.gtkw
+
+debug-ram-mux: 
+	iverilog -DDEBUG -o ram_debug ram_tb.v $(SOURCES)
+	vvp ram_debug
+	gtkwave test.vcd gtk-ram.gtkw
 
 .PHONY: prog_sram prog_flash reset_halt reset_boot clean
