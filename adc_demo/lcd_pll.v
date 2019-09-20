@@ -41,7 +41,7 @@ SB_PLL40_PAD #(
         .PACKAGEPIN(clock_in),
 		.PLLOUTCORE(clock_out)
 		);
-    `elsif
+    `else
         wire clock_out = clock_in;
     `endif
 

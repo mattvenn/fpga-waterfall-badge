@@ -18,9 +18,10 @@ module top(
 wire pixclk;
 wire locked;
 wire visible;
+wire lower_blank;
 wire adc_ready;
 wire start;
-wire [23:0] rgb_data = { ram_read_data, 16'b0 };
+wire [23:0] rgb_data = { 8'b0, ram_read_data, 8'b0 };
 localparam SAMPLE_WIDTH = 12;  // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
 
@@ -37,24 +38,19 @@ wire [8:0] x;
 wire [7:0] y;
 wire [16:0] ram_addr = visible ? x + y * 320 : 0;
 
-localparam STATE_START = 1;
-localparam STATE_RESET = 2;
-localparam STATE_VIDEO = 3;
-localparam STATE_END = 4;
+localparam STATE_RESET = 1;
+localparam STATE_VIDEO = 2;
+localparam STATE_END = 3;
 
-reg [$clog2(STATE_END)-1:0] state = STATE_START;
+reg [$clog2(STATE_END)-1:0] state = STATE_RESET;
 
 always @(posedge pixclk) begin
     
     case(state)
-        STATE_START: begin
-            if(start)
-                state <= STATE_RESET;
-        end
         STATE_RESET: begin
             ram_write_data <= x;
             ram_write_enable <= 1;
-            if(start)
+            if(lower_blank)
                 state <= STATE_VIDEO;
 
         end
@@ -68,6 +64,7 @@ end
 
 lcdtest lcddrv_i (.clk(pixclk), //20.2MHz pixel clock in
                   .visible(visible),
+                  .lower_blank(lower_blank),
                   .start(start),
                   .resetn(locked),
                   .lcd_dat(lcd_dat),
