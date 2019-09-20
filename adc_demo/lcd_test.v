@@ -34,7 +34,7 @@ lcdtest lcddrv_i (.clk(pixclk), //20.2MHz pixel clock in
                   .resetn(locked),
                   .lcd_dat(lcd_dat),
                   .lcd_hsync(lcd_hsync),
-                  .lcd_hsync(lcd_hsync),
+                  .lcd_vsync(lcd_vsync),
                   .rgb_data(rgb_data),
                   .lcd_den(lcd_den));
 
