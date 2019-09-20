@@ -20,13 +20,51 @@ wire locked;
 wire visible;
 wire adc_ready;
 wire start;
-reg [23:0] rgb_data;
+wire [23:0] rgb_data = { ram_read_data, 16'b0 };
 localparam SAMPLE_WIDTH = 12;  // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
 
 pll pll_i(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 
-adc adc_inst_0(.clk(pixclk), .reset(0), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd), .ready(adc_ready), .data(adc_data));
+adc adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd), .ready(adc_ready), .data(adc_data));
+
+reg ram_write_enable = 0;
+reg [7:0] ram_write_data;
+wire [7:0] ram_read_data;
+ram ram_0 (.clk(pixclk), .addr(ram_addr), .wdata(ram_write_data), .rdata(ram_read_data), .w_enable(ram_write_enable));
+
+wire [8:0] x;
+wire [7:0] y;
+wire [16:0] ram_addr = visible ? x + y * 320 : 0;
+
+localparam STATE_START = 1;
+localparam STATE_RESET = 2;
+localparam STATE_VIDEO = 3;
+localparam STATE_END = 4;
+
+reg [$clog2(STATE_END)-1:0] state = STATE_START;
+
+always @(posedge pixclk) begin
+    
+    case(state)
+        STATE_START: begin
+            if(start)
+                state <= STATE_RESET;
+        end
+        STATE_RESET: begin
+            ram_write_data <= x;
+            ram_write_enable <= 1;
+            if(start)
+                state <= STATE_VIDEO;
+
+        end
+        STATE_VIDEO: begin
+            ram_write_enable <= 0;
+        end
+
+    endcase
+
+end
 
 lcdtest lcddrv_i (.clk(pixclk), //20.2MHz pixel clock in
                   .visible(visible),
@@ -34,14 +72,18 @@ lcdtest lcddrv_i (.clk(pixclk), //20.2MHz pixel clock in
                   .resetn(locked),
                   .lcd_dat(lcd_dat),
                   .lcd_hsync(lcd_hsync),
-                  .lcd_hsync(lcd_hsync),
+                  .lcd_vsync(lcd_vsync),
                   .rgb_data(rgb_data),
+                  .x(x),
+                  .y(y),
                   .lcd_den(lcd_den));
 
 //assign LED2 = locked; // yosys reports this error when uncommented: ERROR: Mismatch in directionality for cell port top.pll_i.locked: \locked <= \pll_i.locked
+/*
 always @(posedge pixclk)
     if(start)
         rgb_data <= {adc_data[11:4], 8'b0, adc_data[11:4]};
+*/
 
 assign LEDR_N = adc_data[SAMPLE_WIDTH-1];
 assign LEDG_N = adc_data[SAMPLE_WIDTH-2];

@@ -4,6 +4,8 @@ module lcdtest (input clk, //19.2MHz pixel clock in
                 input [23:0] rgb_data,
                 output visible,
                 output start,
+                output [8:0] x,
+                output [7:0] y,
                 output reg [7:0] lcd_dat,
                 output reg lcd_hsync,
                 output reg lcd_vsync,
@@ -28,6 +30,9 @@ reg [9:0] v_pos = 0;
 wire start = (h_pos == 0 && v_pos == 0);
 
 wire h_active, v_active;
+assign x = visible ? h_pos : 0;
+assign y = visible ? v_pos : 0;
+
 //wire [23:0] rgb_data;
 
 always @(posedge clk) 
