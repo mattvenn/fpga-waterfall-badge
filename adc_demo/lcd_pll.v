@@ -27,6 +27,7 @@ module pll(
 	output locked
 	);
 
+    `ifndef DEBUG
 SB_PLL40_PAD #(
 		.FEEDBACK_PATH("SIMPLE"),
 		.DIVR(4'b0000),
@@ -40,5 +41,8 @@ SB_PLL40_PAD #(
         .PACKAGEPIN(clock_in),
 		.PLLOUTCORE(clock_out)
 		);
+    `else
+        wire clock_out = clock_in;
+    `endif
 
 endmodule

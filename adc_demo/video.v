@@ -3,24 +3,33 @@ module lcdtest (input clk, //19.2MHz pixel clock in
                 input resetn,
                 input [23:0] rgb_data,
                 output visible,
+                output lower_blank,
                 output start,
+                output [8:0] x,
+                output [7:0] y,
                 output reg [7:0] lcd_dat,
                 output reg lcd_hsync,
                 output reg lcd_vsync,
                 output reg lcd_den);
               
-            
+`ifdef DEBUG           
+parameter h_visible = 10'd32;
+parameter v_visible = 10'd24;
+`else
 parameter h_visible = 10'd320;
+parameter v_visible = 10'd240;
+`endif
 parameter h_front = 10'd20;
 parameter h_sync = 10'd30;
 parameter h_back = 10'd38;
 parameter h_total = h_visible + h_front + h_sync + h_back;
 
-parameter v_visible = 10'd240;
 parameter v_front = 10'd4;
 parameter v_sync = 10'd3;
 parameter v_back = 10'd15;
 parameter v_total = v_visible + v_front + v_sync + v_back;
+
+wire lower_blank = v_pos > v_visible;
 
 reg [1:0] channel = 0;
 reg [9:0] h_pos = 0;
@@ -28,6 +37,9 @@ reg [9:0] v_pos = 0;
 wire start = (h_pos == 0 && v_pos == 0);
 
 wire h_active, v_active;
+assign x = visible ? h_pos : 0;
+assign y = visible ? v_pos : 0;
+
 //wire [23:0] rgb_data;
 
 always @(posedge clk) 
