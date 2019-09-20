@@ -21,7 +21,7 @@ wire visible;
 wire lower_blank;
 wire adc_ready;
 wire start;
-wire [23:0] rgb_data = { 8'b0, ram_read_data, 8'b0 };
+wire [23:0] rgb_data = { ram_read_data, ram_read_data, ram_read_data};
 localparam SAMPLE_WIDTH = 12;  // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
 
@@ -36,7 +36,7 @@ ram ram_0 (.clk(pixclk), .addr(ram_addr), .wdata(ram_write_data), .rdata(ram_rea
 
 wire [8:0] x;
 wire [7:0] y;
-wire [16:0] ram_addr = visible ? x + y * 320 : 0;
+wire [16:0] ram_addr = visible ? (x >> 2) + (y>>2) * (320/4) : 0;
 
 localparam STATE_RESET = 1;
 localparam STATE_VIDEO = 2;
