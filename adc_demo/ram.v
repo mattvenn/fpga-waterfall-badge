@@ -1,5 +1,6 @@
 `default_nettype none
 module ram 
+    (
     // 320 x 240 = 76.8k
     input clk,
     input [16:0] addr,
@@ -33,6 +34,16 @@ module ram
            3'b101: rdata = rdata3[15:8];
            default:rdata = 8'b0;
        endcase
+   /*
+   // fails timing
+  assign rdata = (addr[16:14] == 3'b000) ? rdata1[ 7:0] :
+                 (addr[16:14] == 3'b001) ? rdata1[15:8] :
+                 (addr[16:14] == 3'b010) ? rdata2[ 7:0] :
+                 (addr[16:14] == 3'b011) ? rdata2[15:8] :
+                 (addr[16:14] == 3'b100) ? rdata3[ 7:0] :
+                 (addr[16:14] == 3'b101) ? rdata3[15:8] :
+                 8'b0;
+   */
        
    // wdata
    wire [15:0] wdata16 = { wdata, wdata };
