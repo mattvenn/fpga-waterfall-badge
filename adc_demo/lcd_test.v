@@ -15,6 +15,7 @@ module top(
     input wire adc_sd
     
     );
+    //message
 wire pixclk;
 wire locked;
 wire visible;
