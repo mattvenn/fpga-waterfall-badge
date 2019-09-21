@@ -29,7 +29,7 @@ prog: lcd_test.bin
 	iceprog $<
 
 clean:
-	rm -f lcd_test.json lcd_test.asc lcd_test.bin
+	rm -f lcd_test.json lcd_test.asc lcd_test.bin *log
 
 debug: 
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES)
