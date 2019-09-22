@@ -21,6 +21,7 @@ lcd_test.json: $(SOURCES)
 
 lcd_test.asc: lcd_test.json icebreaker.pcf
 	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
+	~/logLUTs/logLUTs.py --no-store
 
 lcd_test.bin: lcd_test.asc
 	icepack lcd_test.asc lcd_test.bin
