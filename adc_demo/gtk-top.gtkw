@@ -1,15 +1,15 @@
 [*]
-[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Fri Sep 20 11:53:37 2019
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sun Sep 22 08:00:12 2019
 [*]
-[dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
-[dumpfile_mtime] "Fri Sep 20 11:52:39 2019"
-[dumpfile_size] 2886510
-[savefile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/gtk-top.gtkw"
-[timestart] 0
-[size] 1939 1187
+[dumpfile] "/home/matt/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
+[dumpfile_mtime] "Sun Sep 22 07:58:20 2019"
+[dumpfile_size] 3151947
+[savefile] "/home/matt/fpga/fpga-waterfall-badge/adc_demo/gtk-top.gtkw"
+[timestart] 13710
+[size] 1237 745
 [pos] -1 -1
-*-13.000000 14251 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-4.000000 13725 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
 [treeopen] test.top0.
 [sst_width] 253
@@ -18,11 +18,15 @@
 [sst_vpaned_height] 364
 @28
 test.clk
+@29
+test.top0.counter[2:0]
+@28
+test.top0.slow_clock
 test.top0.pixclk
 @22
 test.top0.lcddrv_i.rgb_data[23:0]
 test.top0.lcd_dat[7:0]
-@201
+@200
 -
 @28
 test.top0.lower_blank
