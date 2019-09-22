@@ -10,17 +10,17 @@ help:
 	@echo
 
 SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v
-NEXTPNR_DIR = /home/matt/work/fpga/nextpnr
+NEXTPNR_DIR = /home/matt/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
 SEED = 12
 
 lcd_test.json: $(SOURCES)
-	yosys -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
+	yosys -l yosys.log -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
 
 lcd_test.asc: lcd_test.json icebreaker.pcf
-	${NEXTPNR_DIR}/nextpnr-ice40 --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
+	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
 
 lcd_test.bin: lcd_test.asc
 	icepack lcd_test.asc lcd_test.bin
@@ -29,7 +29,7 @@ prog: lcd_test.bin
 	iceprog $<
 
 clean:
-	rm -f lcd_test.json lcd_test.asc lcd_test.bin
+	rm -f lcd_test.json lcd_test.asc lcd_test.bin *log
 
 debug: 
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES)
