@@ -33,7 +33,15 @@ adc adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_clk), .adc_cs(adc_cs), .
 reg ram_write_enable = 0;
 reg [7:0] ram_write_data;
 wire [7:0] ram_read_data;
-ram ram_0 (.clk(pixclk), .addr(ram_addr), .wdata(ram_write_data), .rdata(ram_read_data), .w_enable(ram_write_enable));
+reg [2:0] counter = 0;
+wire slow_clock = counter == 0;
+always @(posedge pixclk) begin
+    counter <= counter + 1;
+    if(counter == 2) begin
+        counter <= 0;
+    end
+end
+ram ram_0 (.clk(slow_clock), .addr(ram_addr), .wdata(ram_write_data), .rdata(ram_read_data), .w_enable(ram_write_enable));
 
 wire [8:0] x;
 wire [7:0] y;
@@ -83,7 +91,7 @@ always @(posedge pixclk)
         rgb_data <= {adc_data[11:4], 8'b0, adc_data[11:4]};
 */
 
-assign LEDR_N = BTN_N; //adc_data[SAMPLE_WIDTH-1];
+assign LEDR_N = adc_data[SAMPLE_WIDTH-1];
 assign LEDG_N = adc_data[SAMPLE_WIDTH-2];
   
 assign lcd_clk = pixclk;
