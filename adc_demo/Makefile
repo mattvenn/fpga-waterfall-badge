@@ -16,11 +16,17 @@ ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
 SEED = 12
 
+ram.json: ram.v
+	yosys -l yosys.log -p 'synth_ice40 -top ram -json ram.json' ram.v
+
+ram.asc: ram.json ram.pcf
+	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf ram.pcf --json $<
+
 lcd_test.json: $(SOURCES)
 	yosys -l yosys.log -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
 
 lcd_test.asc: lcd_test.json icebreaker.pcf
-	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
+	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --pre-pack clock_constraints.py --seed $(SEED) --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
 
 lcd_test.bin: lcd_test.asc
 	icepack lcd_test.asc lcd_test.bin
