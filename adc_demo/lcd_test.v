@@ -22,9 +22,11 @@ wire lower_blank;
 wire adc_ready;
 wire start;
 wire button = BTN_N == 1 ? 8'b0 : 8'b11110000;
-wire [23:0] rgb_data = { 8'b0,  ram_read_data, 8'h0F };
+wire [23:0] rgb_data; // = { 8'b0,  ram_read_data, 8'h0F };
 localparam SAMPLE_WIDTH = 12;  // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
+
+gradientROM gradientROM_0 (.clk(pixclk), .addr(ram_read_data), .dout(rgb_data));
 
 pll pll_i(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 

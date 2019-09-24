@@ -9,7 +9,7 @@ help:
 	@echo "make clean             remove output files"
 	@echo
 
-SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v
+SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
@@ -19,7 +19,7 @@ SEED = 12
 lcd_test.json: $(SOURCES)
 	yosys -l yosys.log -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
 
-lcd_test.asc: lcd_test.json icebreaker.pcf
+lcd_test.asc: lcd_test.json icebreaker.pcf GRADIENT_24.hex
 	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
 	~/logLUTs/logLUTs.py --no-store
 
