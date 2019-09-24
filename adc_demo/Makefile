@@ -10,7 +10,7 @@ help:
 	@echo
 
 SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v
-NEXTPNR_DIR = ~/fpga/nextpnr
+NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48

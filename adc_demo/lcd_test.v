@@ -37,7 +37,7 @@ ram ram_0 (.clk(pixclk), .addr(ram_addr), .wdata(ram_write_data), .rdata(ram_rea
 
 wire [8:0] x;
 wire [7:0] y;
-wire [16:0] ram_addr = visible ? x + y * 320 : 0;
+reg [16:0] ram_addr;
 
 localparam STATE_RESET = 1;
 localparam STATE_VIDEO = 2;
@@ -46,7 +46,7 @@ localparam STATE_END = 3;
 reg [$clog2(STATE_END)-1:0] state = STATE_RESET;
 
 always @(posedge pixclk) begin
-    
+    ram_addr <= visible ? x + (((y << 2) + y)<<6): 0; // y * 320
     case(state)
         STATE_RESET: begin
             ram_write_data <= x+y;
