@@ -14,12 +14,12 @@ NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 12
+SEED = 412
 
 lcd_test.json: $(SOURCES)
 	yosys -l yosys.log -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
 
-lcd_test.asc: lcd_test.json icebreaker.pcf GRADIENT_24.hex
+lcd_test.asc: lcd_test.json icebreaker.pcf
 	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
 	~/logLUTs/logLUTs.py --no-store
 

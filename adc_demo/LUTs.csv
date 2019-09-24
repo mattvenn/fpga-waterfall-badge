@@ -10,3 +10,4 @@ date,commit,message,flops,luts,freq
 2019-09-22,c526fb0,clock constraints for 2 clocks,71,236,19.18
 2019-09-24,92b6a6c,merged ram-mux,85,203,32.43
 2019-09-24,1fd4052,scrolling effect,123,358,25.64
+2019-09-24,ae5b84e,gradient,123,372,25.6

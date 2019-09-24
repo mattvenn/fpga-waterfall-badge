@@ -23,10 +23,12 @@ wire adc_ready;
 wire start;
 wire button = BTN_N == 1 ? 8'b0 : 8'b11110000;
 wire [23:0] rgb_data; // = { 8'b0,  ram_read_data, 8'h0F };
+wire [23:0] rgb_data_gradient;
+assign rgb_data = x < 2 ? 24'b0 : rgb_data_gradient;
 localparam SAMPLE_WIDTH = 12;  // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
 
-gradientROM gradientROM_0 (.clk(pixclk), .addr(ram_read_data), .dout(rgb_data));
+gradientROM gradientROM_0 (.clk(pixclk), .addr(ram_read_data), .dout(rgb_data_gradient));
 
 pll pll_i(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 
@@ -66,9 +68,10 @@ always @(posedge pixclk) begin
             end
 
         end
+
         // read pixel from ram until get to lower blanking
         STATE_VIDEO: begin
-            y_ram_offset <= y + y_offset > 240 ? y + y_offset - 240 : y+y_offset;
+            y_ram_offset <= (y + y_offset) >= 240 ? y + y_offset - 240 : y+y_offset;
             ram_addr <= visible ? x + (((y_ram_offset << 2) + y_ram_offset)<<6): 0; // y * 320
             if(lower_blank) begin
                 scroll_counter <= scroll_counter + 1;
@@ -77,9 +80,6 @@ always @(posedge pixclk) begin
                     adc_buf <= adc_data[11:4];
                     x_count <= 0;
                     ram_write_enable <= 1;
-                    y_offset <= y_offset + 1;
-                    if(y_offset == 240)
-                        y_offset <= 0;
                     
                 end
             end
@@ -89,11 +89,15 @@ always @(posedge pixclk) begin
         STATE_WRITE_RAM: begin
             x_count <= x_count + 1;
             ram_addr <= x_count + (((y_offset << 2 ) + y_offset)<<6);
-            ram_write_data <= x_count > adc_buf ? adc_buf :  8'h00;
+            ram_write_data <= x_count > adc_buf ? adc_buf : 8'h00;
             
             if( x_count == 320) begin
                 ram_write_enable <= 0;
                 state <= STATE_WAIT_VIDEO;
+
+                y_offset <= y_offset + 1;
+                if(y_offset == 240)
+                    y_offset <= 0;
             end
         end
 
