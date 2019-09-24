@@ -1,0 +1,10 @@
+date,commit,message,flops,luts,freq
+2019-09-21,ad0659c,1st commit,80,110,60.99
+2019-09-21,3b16ec1,testbench,80,110,60.99
+2019-09-21,8df564c,fix vsync,81,116,57.65
+2019-09-21,2bab770,ramtest,62,180,24.58
+2019-09-21,9cbc44e,spram working - needs more SPRAM blocks to cover whole LCD,62,152,23.56
+2019-09-21,442990e,grey fade,62,147,23.69
+2019-09-21,cda4924,test logluts5,68,228,19.5
+2019-09-22,904eadf,slow clock for ram,71,236,19.18
+2019-09-22,c526fb0,clock constraints for 2 clocks,71,236,19.18

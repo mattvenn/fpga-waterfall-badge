@@ -1,6 +1,7 @@
 `default_nettype none
 module top(
     input clock_in,
+    input BTN_N,
     output LEDR_N, LEDG_N,
     output lcd_clk,
     output [7:0] lcd_dat,
@@ -14,14 +15,14 @@ module top(
     input wire adc_sd
     
     );
-
 wire pixclk;
 wire locked;
 wire visible;
 wire lower_blank;
 wire adc_ready;
 wire start;
-wire [23:0] rgb_data = { ram_read_data, ram_read_data, ram_read_data};
+wire button = BTN_N == 1 ? 8'b0 : 8'b11110000;
+wire [23:0] rgb_data = { ram_read_data, button, adc_data[11:4]};
 localparam SAMPLE_WIDTH = 12;  // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
 
@@ -36,7 +37,7 @@ ram ram_0 (.clk(pixclk), .addr(ram_addr), .wdata(ram_write_data), .rdata(ram_rea
 
 wire [8:0] x;
 wire [7:0] y;
-wire [16:0] ram_addr = visible ? (x >> 2) + (y>>2) * (320/4) : 0;
+reg [16:0] ram_addr;
 
 localparam STATE_RESET = 1;
 localparam STATE_VIDEO = 2;
@@ -45,10 +46,10 @@ localparam STATE_END = 3;
 reg [$clog2(STATE_END)-1:0] state = STATE_RESET;
 
 always @(posedge pixclk) begin
-    
+    ram_addr <= visible ? x + (((y << 2) + y)<<6): 0; // y * 320
     case(state)
         STATE_RESET: begin
-            ram_write_data <= x;
+            ram_write_data <= x+y;
             ram_write_enable <= 1;
             if(lower_blank)
                 state <= STATE_VIDEO;
@@ -82,7 +83,7 @@ always @(posedge pixclk)
         rgb_data <= {adc_data[11:4], 8'b0, adc_data[11:4]};
 */
 
-assign LEDR_N = adc_data[SAMPLE_WIDTH-1];
+assign LEDR_N = BTN_N; //adc_data[SAMPLE_WIDTH-1];
 assign LEDG_N = adc_data[SAMPLE_WIDTH-2];
   
 assign lcd_clk = pixclk;

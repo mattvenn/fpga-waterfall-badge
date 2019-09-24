@@ -1,0 +1,41 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Fri Sep 20 20:47:26 2019
+[*]
+[dumpfile] "/home/matt/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
+[dumpfile_mtime] "Fri Sep 20 20:47:03 2019"
+[dumpfile_size] 9172848
+[savefile] "/home/matt/fpga/fpga-waterfall-badge/adc_demo/gtk-ram.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-16.000000 46802 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test.
+[sst_width] 223
+[signals_width] 200
+[sst_expanded] 1
+[sst_vpaned_height] 152
+@28
+test.clk
+test.w_enable
+@24
+test.addr[16:0]
+@22
+test.rdata[7:0]
+test.ram0.rdata1[15:0]
+test.ram0.rdata2[15:0]
+test.ram0.rdata3[15:0]
+@200
+-
+@28
+test.ram0.wmask1[3:0]
+test.ram0.wmask2[3:0]
+test.ram0.wmask3[3:0]
+@200
+-
+@22
+test.ram0.wdata[7:0]
+@23
+test.ram0.wdata16[15:0]
+[pattern_trace] 1
+[pattern_trace] 0
