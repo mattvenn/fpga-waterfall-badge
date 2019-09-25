@@ -47,7 +47,7 @@ reg [16:0] frame_buf_addr = 0;
 // scrolling frame buffer 
 reg [7:0] y_offset = 0;         // which line is currently being used as the 1st line, max 240
 reg [7:0] y_offset_mod = 0;     // (y_offset + y) mod 240, max 240
-reg [1:0] scroll_delay = 0;     // used to count frames till next scroll, 2 bit counter so 4 times slower than frame rate
+reg scroll_delay = 0;           // used to count frames till next scroll
 reg [8:0] x_count = 0;          // counter for copying adc data into frame buffer
 
 // buttons
@@ -115,7 +115,9 @@ always @(posedge pixclk) begin
                     adc_buf <= adc_data[11:4];
                     x_count <= 0;
                     frame_buf_wenable <= 1;
-                end
+                end else
+                    state <= STATE_WAIT_VIDEO;
+
             end
         end
 

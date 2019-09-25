@@ -8,7 +8,7 @@ module test;
     initial begin
         $dumpfile("test.vcd");
         $dumpvars(0,test);
-        # 80000;
+        # 250000;
         $finish;
 
     end
