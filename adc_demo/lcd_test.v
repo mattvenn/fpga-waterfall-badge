@@ -16,6 +16,12 @@ module top(
     
     );
 
+localparam SAMPLE_WIDTH = 12;   // ADC sample bit depth - actually ADC is only 12 bit
+localparam FREQ_BINS = 16;       // number of frequency bins - must update twiddle rom if changed
+localparam ADDR_W = 9;          // number of address lines needed for freq bins
+localparam DATA_W = 8;          // dft internal data width
+
+
 // lcd wires
 wire pixclk;
 wire locked;
@@ -33,7 +39,6 @@ wire [23:0] rgb_data_gradient;  // data coming out of the gradient lookup ROM
 assign rgb_data = x < 2 ? 24'b0 : rgb_data_gradient;
 
 // adc
-localparam SAMPLE_WIDTH = 12;   // sample bit depth - actually ADC is only 12 bit
 wire [SAMPLE_WIDTH-1:0] adc_data;
 wire adc_ready;
 
@@ -51,7 +56,7 @@ reg  scroll_delay = 0;          // used to count frames till next scroll, 2 bit 
 // frequency bin bram
 reg  [8:0] freq_bram_waddr = 0;
 reg  [7:0] freq_bram_wdata = 0;
-reg  [8:0] freq_bram_raddr = 0;
+reg  [8:0] freq_bram_bin = 0;
 wire [7:0] freq_bram_rdata;
 reg freq_bram_w = 0; // write enable signal
 reg freq_bram_r = 0; // read enable signal
@@ -61,8 +66,7 @@ reg fft_start = 0;
 reg fft_read = 0;
 reg [7:0] fft_sample = 0;
 wire fft_ready;
-wire [7:0] bin_out_imag;
-wire [7:0] bin_out_real;
+wire [15:0] bin_out;
 
 // buttons
 assign LEDR_N = BTN_N;
@@ -83,7 +87,7 @@ adc adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_clk), .adc_cs(adc_cs), .
 ram frame_buffer_0 (.clk(pixclk), .addr(frame_buf_addr), .wdata(frame_buf_wdata), .rdata(frame_buf_rdata), .w_enable(frame_buf_wenable));
 
 // dual ported bram between fft and video
-freq_bram freq_bram_0(.w_clk(pixclk), .r_clk(pixclk), .w_en(freq_bram_w), .r_en(freq_bram_r), .d_in(freq_bram_wdata), .d_out(freq_bram_rdata), .r_addr(freq_bram_raddr), .w_addr(freq_bram_waddr));
+freq_bram #(.addr_w(ADDR_W), .data_w(DATA_W)) freq_bram_0(.w_clk(pixclk), .r_clk(pixclk), .w_en(freq_bram_w), .r_en(freq_bram_r), .d_in(freq_bram_wdata), .d_out(freq_bram_rdata), .r_addr(freq_bram_bin), .w_addr(freq_bram_waddr));
 
 // lcd driver
 video video_0 (.clk(pixclk), //20.2MHz pixel clock in
@@ -99,7 +103,7 @@ video video_0 (.clk(pixclk), //20.2MHz pixel clock in
                   .lcd_den(lcd_den));
 
 // sliding dft
-sdft sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out_real(bin_out_real), .bin_out_imag(bin_out_imag), .bin_addr(freq_bram_waddr)); 
+sdft #(.data_w(DATA_W), .freq_bins(FREQ_BINS), .freq_w(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
 
 // state machine for scrolling pixel buffer
 localparam STATE_RESET      = 1;
@@ -132,7 +136,7 @@ always @(posedge pixclk) begin
                 scroll_delay <= scroll_delay + 1;
                 if(&scroll_delay) begin
                     pix_state <= STATE_WRITE_RAM;
-                    freq_bram_raddr <= 0;
+                    freq_bram_bin <= 0;
                     freq_bram_r <= 1;
                     frame_buf_wenable <= 1;
                 end else
@@ -142,11 +146,11 @@ always @(posedge pixclk) begin
 
         // grab fft data and use it to draw a line in the frame buffer, y position changes every cycle to make a scrolling effect
         STATE_WRITE_RAM: begin
-            freq_bram_raddr <= freq_bram_raddr + 1;
-            frame_buf_addr <= freq_bram_raddr + (((y_offset << 2 ) + y_offset)<<6);
+            freq_bram_bin <= freq_bram_bin + 1;
+            frame_buf_addr <= freq_bram_bin + (((y_offset << 2 ) + y_offset)<<6);
             frame_buf_wdata <= freq_bram_rdata;
             
-            if(freq_bram_raddr == 320) begin
+            if(freq_bram_bin == FREQ_BINS) begin
                 frame_buf_wenable <= 0;
                 freq_bram_r <= 0;
                 pix_state <= STATE_WAIT_VIDEO;
@@ -177,7 +181,7 @@ always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-                fft_sample <= x; //adc_data[11:3];
+                fft_sample <= adc_data[11:3];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;
             end
@@ -199,7 +203,7 @@ always @(posedge pixclk) begin
 
         STATE_FFT_READ: begin
             // store all the squared bin values to BRAM
-            freq_bram_wdata <= ((bin_out_real * bin_out_real) + (bin_out_imag * bin_out_imag)); // some divider here
+            freq_bram_wdata <= bin_out;
             freq_bram_waddr <= freq_bram_waddr + 1;
             if(freq_bram_waddr == 320) begin
                 freq_bram_waddr <= 0;

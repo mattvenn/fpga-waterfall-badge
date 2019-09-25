@@ -21,7 +21,6 @@ module freq_bram
 
     initial begin
         if (FILE) $readmemh(FILE, ram);
-        d_out <= 0;
     end
 
     always @(posedge w_clk) begin
