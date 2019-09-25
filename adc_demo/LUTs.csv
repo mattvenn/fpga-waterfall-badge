@@ -11,3 +11,5 @@ date,commit,message,flops,luts,freq
 2019-09-24,92b6a6c,merged ram-mux,85,203,32.43
 2019-09-24,1fd4052,scrolling effect,123,358,25.64
 2019-09-24,ae5b84e,gradient,123,372,25.6
+2019-09-24,ae5b84e,gradient,123,390,22.69
+2019-09-25,f407f67,"fixed up a few things, and sliced off 1st 2 pixels as addressing is registered",123,389,22.31

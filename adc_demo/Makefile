@@ -14,10 +14,18 @@ NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 412
-
+SEED = 13
+GIT_MSG = $(shell git log -1 --pretty=%s)
+GIT_CMT = $(shell git log -1 --pretty=%h)
 lcd_test.json: $(SOURCES)
 	yosys -l yosys.log -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
+
+update_luts:
+	~/logLUTs/logLUTs.py --message "$(GIT_MSG)" \
+    --commit $(GIT_CMT) \
+    --yosys-log yosys.log \
+    --nextpnr-log nextpnr.log \
+    --csvfile LUTs.csv
 
 lcd_test.asc: lcd_test.json icebreaker.pcf
 	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<

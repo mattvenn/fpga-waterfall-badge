@@ -1,10 +1,9 @@
 `default_nettype none
-module lcdtest (input clk, //19.2MHz pixel clock in
+module video (input clk, //19.2MHz pixel clock in
                 input resetn,
                 input [23:0] rgb_data,
                 output visible,
                 output lower_blank,
-                output start,
                 output [8:0] x,
                 output [7:0] y,
                 output reg [7:0] lcd_dat,
@@ -34,13 +33,10 @@ wire lower_blank = v_pos > v_visible;
 reg [1:0] channel = 0;
 reg [9:0] h_pos = 0;
 reg [9:0] v_pos = 0;
-wire start = (h_pos == 0 && v_pos == 0);
 
 wire h_active, v_active;
 assign x = visible ? h_pos : 0;
 assign y = visible ? v_pos : 0;
-
-//wire [23:0] rgb_data;
 
 always @(posedge clk) 
 begin
@@ -77,12 +73,5 @@ end
 assign h_active = (h_pos < h_visible);
 assign v_active = (v_pos < v_visible);
 assign visible = h_active && v_active;
-/*
-assign rgb_data = (h_pos < 64)  ? {h_pos[5:0], 2'd0, v_pos[5:0], 10'd0} :
-                  (h_pos < 128) ? {8'd0, h_pos[5:0], 10'd0} :
-                  (h_pos < 192) ? {16'd0, h_pos[5:0], 2'd0} :
-                  (h_pos < 256) ? {h_pos[5:0], 2'd0, h_pos[5:0], 2'd0, h_pos[5:0], 2'd0} :
-                  (h_pos < 320) ? {h_pos[5:0], 2'd0, h_pos[5:0], 8'd0, 2'd0} :
-                  24'd0;
-*/
+
 endmodule
