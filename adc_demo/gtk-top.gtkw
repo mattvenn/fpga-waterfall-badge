@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Fri Sep 20 11:53:37 2019
+[*] Wed Sep 25 14:05:04 2019
 [*]
 [dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
-[dumpfile_mtime] "Fri Sep 20 11:52:39 2019"
-[dumpfile_size] 2886510
+[dumpfile_mtime] "Wed Sep 25 13:58:38 2019"
+[dumpfile_size] 5254488
 [savefile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/gtk-top.gtkw"
 [timestart] 0
 [size] 1939 1187
-[pos] -1 -1
-*-13.000000 14251 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 383 128
+*-14.000000 28590 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
 [treeopen] test.top0.
 [sst_width] 253
@@ -20,34 +20,41 @@
 test.clk
 test.top0.pixclk
 @22
-test.top0.lcddrv_i.rgb_data[23:0]
 test.top0.lcd_dat[7:0]
-@201
+@200
 -
 @28
+test.top0.pix_state[2:0]
 test.top0.lower_blank
-@24
-test.top0.state[1:0]
 @22
 test.top0.x[8:0]
 test.top0.y[7:0]
 @28
 test.top0.visible
-test.top0.start
 @200
 -
 @28
-test.top0.ram_write_enable
-@22
-test.top0.ram_write_data[7:0]
+test.top0.scroll_delay[1:0]
 @200
 -
 @22
-test.top0.ram_0.addr[16:0]
+test.top0.fft_sample[7:0]
+test.top0.fft_state[3:0]
 @28
-test.top0.ram_0.w_enable
-test.top0.ram_0.clk
+test.top0.fft_start
+test.top0.fft_ready
+test.top0.fft_read
+@200
+-
 @22
-test.top0.ram_0.wdata[7:0]
+test.top0.freq_bram_waddr[8:0]
+test.top0.freq_bram_wdata[7:0]
+@28
+test.top0.freq_bram_r
+test.top0.freq_bram_w
+@22
+test.top0.freq_bram_raddr[8:0]
+@23
+test.top0.freq_bram_rdata[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

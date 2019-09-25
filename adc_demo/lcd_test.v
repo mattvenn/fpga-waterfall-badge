@@ -51,10 +51,10 @@ reg [1:0] scroll_delay = 0;     // used to count frames till next scroll, 2 bit 
 // frequency bin bram
 reg  [8:0] freq_bram_waddr = 0;
 reg  [7:0] freq_bram_wdata = 0;
-reg  [8:0] freq_bram_raddr;
-reg  [7:0] freq_bram_rdata;
+reg  [8:0] freq_bram_raddr = 0;
+wire [7:0] freq_bram_rdata;
 reg freq_bram_w = 0; // write enable signal
-reg freq_bram_r; // read enable signal
+reg freq_bram_r = 0; // read enable signal
 
 // dft
 reg fft_start = 0;
@@ -135,7 +135,8 @@ always @(posedge pixclk) begin
                     freq_bram_raddr <= 0;
                     freq_bram_r <= 1;
                     frame_buf_wenable <= 1;
-                end
+                else
+                    pix_state <= STATE_WAIT_VIDEO;
             end
         end
 
