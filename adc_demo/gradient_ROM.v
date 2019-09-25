@@ -9,7 +9,7 @@ module gradientROM
 #(
     parameter GRADIENT_FILE = "GRADIENT_COLOUR_24.hex",
     parameter addr_width = 8,
-    parameter data_width = 24, 
+    parameter data_width = 24
 )
 (
     input wire                  clk,
