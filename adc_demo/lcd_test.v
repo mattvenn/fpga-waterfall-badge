@@ -46,7 +46,7 @@ reg [16:0] frame_buf_addr = 0;
 // scrolling frame buffer 
 reg [7:0] y_offset = 0;         // which line is currently being used as the 1st line, max 240
 reg [7:0] y_offset_mod = 0;     // (y_offset + y) mod 240, max 240
-reg [1:0] scroll_delay = 0;     // used to count frames till next scroll, 2 bit counter so 4 times slower than frame rate
+reg  scroll_delay = 0;          // used to count frames till next scroll, 2 bit counter so 4 times slower than frame rate
 
 // frequency bin bram
 reg  [8:0] freq_bram_waddr = 0;
@@ -135,7 +135,7 @@ always @(posedge pixclk) begin
                     freq_bram_raddr <= 0;
                     freq_bram_r <= 1;
                     frame_buf_wenable <= 1;
-                else
+                end else
                     pix_state <= STATE_WAIT_VIDEO;
             end
         end
@@ -177,7 +177,7 @@ always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-                fft_sample <= adc_data[11:3];
+                fft_sample <= x; //adc_data[11:3];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;
             end
@@ -199,7 +199,7 @@ always @(posedge pixclk) begin
 
         STATE_FFT_READ: begin
             // store all the squared bin values to BRAM
-            freq_bram_wdata <= ((bin_out_real * bin_out_real) + (bin_out_imag * bin_out_imag)) >> 8; // some divider here
+            freq_bram_wdata <= ((bin_out_real * bin_out_real) + (bin_out_imag * bin_out_imag)); // some divider here
             freq_bram_waddr <= freq_bram_waddr + 1;
             if(freq_bram_waddr == 320) begin
                 freq_bram_waddr <= 0;
