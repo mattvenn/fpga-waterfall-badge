@@ -9,12 +9,12 @@ help:
 	@echo "make clean             remove output files"
 	@echo
 
-SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v
+SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 13
+SEED = 14
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 lcd_test.json: $(SOURCES)

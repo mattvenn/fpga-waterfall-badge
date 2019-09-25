@@ -1,3 +1,6 @@
 *.asc
 *.bin
 *.json
+*.log
+*.list
+*.vcd
