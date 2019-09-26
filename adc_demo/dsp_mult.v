@@ -17,23 +17,23 @@ module dsp_mult_16 (
 	wire [31:0] O;
 	reg [31:0] Q;
 
-	always @(posedge clock)
-		Q <= O;
+//	always @(posedge clock)
+//		Q <= O;
 
-	assign X = Q;
+	assign X = O;
 
 	SB_MAC16 #(
 		.NEG_TRIGGER              (1'b  0),
 
-		.A_REG                    (1'b  1),
-		.B_REG                    (1'b  1),
-		.C_REG                    (1'b  1),
-		.D_REG                    (1'b  1),
+		.A_REG                    (1'b  0),
+		.B_REG                    (1'b  0),
+		.C_REG                    (1'b  0),
+		.D_REG                    (1'b  0),
 
-		.TOP_8x8_MULT_REG         (1'b  1),
-		.BOT_8x8_MULT_REG         (1'b  1),
+		.TOP_8x8_MULT_REG         (1'b  0),
+		.BOT_8x8_MULT_REG         (1'b  0),
 
-		.PIPELINE_16x16_MULT_REG1 (1'b  1),
+		.PIPELINE_16x16_MULT_REG1 (1'b  0),
 		.PIPELINE_16x16_MULT_REG2 (1'b  0),
 
 		.TOPOUTPUT_SELECT         (2'b 11),
