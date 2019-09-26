@@ -15,9 +15,9 @@ module top(
     input wire adc_sd
     
     );
-
+localparam GRADIENT_FILE = "GRADIENT_COLOUR_24.hex";
 localparam SAMPLE_WIDTH = 12;   // ADC sample bit depth - actually ADC is only 12 bit
-localparam FREQ_BINS = 16;       // number of frequency bins - must update twiddle rom if changed
+localparam FREQ_BINS = 320;       // number of frequency bins - must update twiddle rom if changed
 localparam ADDR_W = 9;          // number of address lines needed for freq bins
 localparam DATA_W = 8;          // dft internal data width
 
@@ -75,7 +75,7 @@ assign LEDG_N = adc_data[SAMPLE_WIDTH-2];
 // modules
 
 // gradientROM is a 256x24b lookup that stores the gradient colour. This means the frame buffer just has to store single 8b values for each pixel
-gradientROM gradientROM_0 (.clk(pixclk), .addr(frame_buf_rdata), .dout(rgb_data_gradient));
+gradientROM #(.GRADIENT_FILE(GRADIENT_FILE)) gradientROM_0 (.clk(pixclk), .addr(frame_buf_rdata), .dout(rgb_data_gradient));
 
 // PLL for the video
 pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));

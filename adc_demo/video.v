@@ -12,7 +12,7 @@ module video (input clk, //19.2MHz pixel clock in
                 output reg lcd_den);
               
 `ifdef DEBUG           
-parameter h_visible = 10'd32;
+parameter h_visible = 10'd64;
 parameter v_visible = 10'd24;
 `else
 parameter h_visible = 10'd320;

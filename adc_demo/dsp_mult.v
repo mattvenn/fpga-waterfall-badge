@@ -4,15 +4,13 @@ module dsp_mult_16 (
 	output [31:0] X
 );
 `ifdef DEBUG
-	reg [31:0] r1A, r2A, r3A;
+	reg [31:0] XF;
 
 	always @(posedge clock) begin
-		r1A <= $signed(A) * $signed(B);
-		r2A <= r1A;
-		r3A <= r2A;
+		XF <= $signed(A) * $signed(B);
 	end
 
-	assign X = r3A;
+	assign X = XF;
 `else
 	wire [31:0] O;
 	reg [31:0] Q;

@@ -2,7 +2,7 @@
 module sdft
 #(
     parameter data_w = 8, 
-    parameter freq_bins = 8, // 320
+    parameter freq_bins = 320, // 320
     parameter freq_w    = 16,
     parameter FILE_REAL = "twiddle_real.list",
     parameter FILE_IMAJ = "twiddle_imag.list"
@@ -14,7 +14,7 @@ module sdft
     input wire                              read,
     input wire [bin_addr_w-1:0]             bin_addr,
 
-    output signed [freq_w-1:0]              bin_out,
+    output reg [freq_w-1:0]                 bin_out,
     output wire                             ready
 );
 
@@ -44,7 +44,8 @@ module sdft
 
     integer j;
     initial begin
-        tw_addr = 0;
+        `ifdef DEBUG
+        tw_addr = 0; // can't have initial begin or BRAM won't infer
         sample_index = 0;
         delta = 0;
         for(j = 0; j < freq_bins; j = j + 1)  begin
@@ -52,9 +53,9 @@ module sdft
             frequency_bins_real[j] <= 0;
             frequency_bins_imag[j] <= 0;
         end
+        `endif
+        
     end
-
-
 
     localparam STATE_WAIT           = 0;
     localparam STATE_START          = 1;
@@ -68,11 +69,12 @@ module sdft
 
     assign ready = (state == STATE_WAIT) ? 1'b1 : 1'b0;
 
+    reg [freq_w-1:0] bin_real, bin_imag;
+
     // square the imaginary output to get something real
-    dsp_mult_16 out_mult_real ( .clock(clk), .A(frequency_bins_real[bin_addr]), .B(frequency_bins_real[bin_addr]), .X(out_real_sq));
-    dsp_mult_16 out_mult_imag ( .clock(clk), .A(frequency_bins_imag[bin_addr]), .B(frequency_bins_imag[bin_addr]), .X(out_imag_sq));
+    dsp_mult_16 out_mult_real ( .clock(clk), .A(bin_real), .B(bin_real), .X(out_real_sq));
+    dsp_mult_16 out_mult_imag ( .clock(clk), .A(bin_imag), .B(bin_imag), .X(out_imag_sq));
     wire [31:0] out_real_sq, out_imag_sq;
-    assign bin_out = (out_real_sq + out_imag_sq ) >>> 8;
     wire [31:0] f1, f2, f3, f4;
 
     dsp_mult_16 complex_mult_f1 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_real), .X(f1));
@@ -93,6 +95,9 @@ module sdft
             // now do the multiplcation to a real number with the dsps
             //    bin_out_real <= frequency_bins_real[bin_addr];
             //    bin_out_imag <= frequency_bins_imag[bin_addr];
+                bin_imag <= frequency_bins_imag[bin_addr];
+                bin_real <= frequency_bins_real[bin_addr];
+                bin_out = (out_real_sq + out_imag_sq ) >>> 8;
                 state <= STATE_WAIT;
 
             end
@@ -131,7 +136,7 @@ module sdft
                 // increment sample index (same as rotating)
                 sample_index <= sample_index + 1;
                 // reset index if it wraps
-                if(sample_index == freq_bins)
+                if(sample_index == freq_bins -1)
                     sample_index <= 0;
                 state <= STATE_WAIT;
             end 

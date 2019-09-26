@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Wed Sep 25 14:24:58 2019
+[*] Thu Sep 26 11:11:42 2019
 [*]
 [dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
-[dumpfile_mtime] "Wed Sep 25 14:20:07 2019"
-[dumpfile_size] 54721093
+[dumpfile_mtime] "Thu Sep 26 11:10:10 2019"
+[dumpfile_size] 62993692
 [savefile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/gtk-top.gtkw"
-[timestart] 30510
+[timestart] 307375
 [size] 1939 1187
-[pos] 682 71
-*-11.000000 32903 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 719 228
+*-9.000000 308741 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
 [treeopen] test.top0.
 [treeopen] test.top0.sdft_0.
@@ -22,6 +22,12 @@ test.clk
 test.top0.pixclk
 @22
 test.top0.lcd_dat[7:0]
+@200
+-
+@28
+test.adc_model_inst.sd
+@22
+test.top0.adc_inst_0.data[11:0]
 @200
 -
 @28
@@ -41,17 +47,24 @@ test.top0.fft_sample[7:0]
 test.top0.fft_state[3:0]
 @28
 test.top0.fft_start
+@22
+test.top0.sdft_0.sample_index[8:0]
+@28
 test.top0.fft_ready
 test.top0.fft_read
-@22
-test.top0.sdft_0.twid_imag[7:0]
-test.top0.sdft_0.twid_real[7:0]
-@420
-test.top0.sdft_0.bin_out_imag[19:0]
-@421
-test.top0.sdft_0.bin_out_real[19:0]
 @24
 test.top0.sdft_0.bin_addr[8:0]
+@25
+test.top0.sdft_0.tw_addr[8:0]
+@22
+test.top0.sdft_0.sample[7:0]
+test.top0.sdft_0.delta[8:0]
+test.top0.sdft_0.twid_imag[7:0]
+test.top0.sdft_0.twid_real[7:0]
+test.top0.sdft_0.bin_imag[15:0]
+test.top0.sdft_0.bin_real[15:0]
+test.top0.sdft_0.bin_out[15:0]
+test.top0.sdft_0.f1[31:0]
 @200
 -
 @24
@@ -61,8 +74,6 @@ test.top0.freq_bram_wdata[7:0]
 @28
 test.top0.freq_bram_r
 test.top0.freq_bram_w
-@24
-test.top0.freq_bram_raddr[8:0]
 @22
 test.top0.freq_bram_rdata[7:0]
 [pattern_trace] 1
