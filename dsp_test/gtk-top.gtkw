@@ -1,0 +1,34 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Thu Sep 26 08:00:09 2019
+[*]
+[dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/dsp_test/test.vcd"
+[dumpfile_mtime] "Thu Sep 26 07:59:55 2019"
+[dumpfile_size] 3605784
+[savefile] "/home/matt/work/fpga/fpga-waterfall-badge/dsp_test/gtk-top.gtkw"
+[timestart] 0
+[size] 1503 751
+[pos] 557 170
+*-16.000000 230000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test.
+[sst_width] 253
+[signals_width] 311
+[sst_expanded] 1
+[sst_vpaned_height] 211
+@28
+test.clk
+test.dtr
+test.tx
+@23
+test.dut.data_r[7:0]
+@200
+-
+@28
+test.dut.state[2:0]
+test.dut.samp_en
+@24
+test.dut.samp_count[11:0]
+@22
+test.dut.car_count[12:0]
+[pattern_trace] 1
+[pattern_trace] 0
