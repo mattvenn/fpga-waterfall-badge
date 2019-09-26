@@ -1,29 +1,42 @@
 `default_nettype none
+`timescale 1ns/1ns
 
 module test;
 
     reg clk = 0;
     reg reset = 1;
 
-    initial begin
-        $dumpfile("test.vcd");
-        $dumpvars(0,test);
-        # 100000;
-        $finish;
-
-    end
+    // adc wires
     wire adc_cs;
     wire adc_clk;
     wire adc_ready;
     wire adc_sd;
     reg run = 1;
     wire done;
+    
+    integer i;
+    localparam FREQ_BINS = 320;
 
-    top top0( .clock_in(clk), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd));
-    adc_model #(.PERIOD(100)) adc_model_inst(.run(run), .clk(adc_clk), .cs(adc_cs), .sd(adc_sd), .done(done));
+    initial begin
+        $dumpfile("test.vcd");
+        $dumpvars(0,test);
+        for (i = 0 ; i < 320 ; i = i + 1) begin
+            $dumpvars(1, top_0.sdft_0.samples[i]);
+            $dumpvars(2, top_0.sdft_0.frequency_bins_real[i]);
+            $dumpvars(3, top_0.sdft_0.frequency_bins_imag[i]);
+            $dumpvars(4, top_0.freq_bram_0.ram[i]);
+        end
+        # 20000000;
+        $finish;
 
-    /* Make a regular pulsing clock. */
-    always #1 clk = !clk;
+    end
+
+    top top_0( .clock_in(clk), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd));
+    // period is us 1000 = 0.001s = 1000hz
+    adc_model #(.PERIOD(1000)) adc_model_0(.run(run), .clk(adc_clk), .cs(adc_cs), .sd(adc_sd), .done(done));
+
+    // clock at 20MHz
+    always #25 clk = !clk;
 
 endmodule // test
 

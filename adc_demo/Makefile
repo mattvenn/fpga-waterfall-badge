@@ -9,7 +9,7 @@ help:
 	@echo "make clean             remove output files"
 	@echo
 
-SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v
+SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
@@ -54,5 +54,10 @@ debug-dsp:
 	iverilog -DDEBUG -o dsp_debug dsp_tb.v dsp_mult.v
 	vvp dsp_debug
 	gtkwave test.vcd gtk-dsp.gtkw
+
+debug-abs: 
+	iverilog -DDEBUG -o abs_debug abs_tb.v abs.v
+	vvp abs_debug
+	gtkwave test.vcd gtk-abs.gtkw
 
 .PHONY: prog_sram prog_flash reset_halt reset_boot clean

@@ -1,0 +1,79 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Thu Sep 26 18:07:54 2019
+[*]
+[dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
+[dumpfile_mtime] "Thu Sep 26 18:07:31 2019"
+[dumpfile_size] 1646
+[savefile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/gtk-abs.gtkw"
+[timestart] 0
+[size] 1822 869
+[pos] 418 379
+*-3.801792 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test.
+[sst_width] 253
+[signals_width] 319
+[sst_expanded] 1
+[sst_vpaned_height] 252
+@420
+test.i[15:0]
+@28
+test.abs_0.i_pos
+@c00028
+test.abs_0.i[15:0]
+@28
+(0)test.abs_0.i[15:0]
+(1)test.abs_0.i[15:0]
+(2)test.abs_0.i[15:0]
+(3)test.abs_0.i[15:0]
+(4)test.abs_0.i[15:0]
+(5)test.abs_0.i[15:0]
+(6)test.abs_0.i[15:0]
+(7)test.abs_0.i[15:0]
+(8)test.abs_0.i[15:0]
+(9)test.abs_0.i[15:0]
+(10)test.abs_0.i[15:0]
+(11)test.abs_0.i[15:0]
+(12)test.abs_0.i[15:0]
+(13)test.abs_0.i[15:0]
+(14)test.abs_0.i[15:0]
+(15)test.abs_0.i[15:0]
+@1401200
+-group_end
+@c00028
+test.abs_0.half_i[15:0]
+@28
+(0)test.abs_0.half_i[15:0]
+(1)test.abs_0.half_i[15:0]
+(2)test.abs_0.half_i[15:0]
+(3)test.abs_0.half_i[15:0]
+(4)test.abs_0.half_i[15:0]
+(5)test.abs_0.half_i[15:0]
+(6)test.abs_0.half_i[15:0]
+(7)test.abs_0.half_i[15:0]
+(8)test.abs_0.half_i[15:0]
+(9)test.abs_0.half_i[15:0]
+(10)test.abs_0.half_i[15:0]
+(11)test.abs_0.half_i[15:0]
+(12)test.abs_0.half_i[15:0]
+(13)test.abs_0.half_i[15:0]
+(14)test.abs_0.half_i[15:0]
+(15)test.abs_0.half_i[15:0]
+@1401208
+-group_end
+@200
+-
+@420
+test.r[15:0]
+@29
+test.abs_0.half_r[15:0]
+@28
+test.abs_0.r_pos
+@200
+-
+@28
+test.a[15:0]
+@24
+test.abs_0.a[15:0]
+[pattern_trace] 1
+[pattern_trace] 0

@@ -15,8 +15,10 @@ module adc_model #(
     output reg sd
 );
 
+    localparam HIGH = 200;
+    localparam LOW  = 0;
     reg [$clog2(WIDTH)-1:0] bit_count = 0;
-    reg [WIDTH-1:0] sample_data = 0;
+    reg [WIDTH-1:0] sample_data = HIGH;
     reg [WIDTH-1:0] cycle_timer = 0;
 
     initial begin
@@ -28,7 +30,10 @@ module adc_model #(
         cycle_timer <= cycle_timer + 1;
         if(cycle_timer == PERIOD) begin
             cycle_timer <= 0;
-            sample_data <= sample_data + 1;
+            if(sample_data == HIGH)
+                sample_data <= LOW;
+            else
+                sample_data <= HIGH;
         end
         if(run) begin
             if(cs == 1) begin // reset counters

@@ -20,6 +20,7 @@ localparam SAMPLE_WIDTH = 12;   // ADC sample bit depth - actually ADC is only 1
 localparam FREQ_BINS = 320;       // number of frequency bins - must update twiddle rom if changed
 localparam ADDR_W = 9;          // number of address lines needed for freq bins
 localparam DATA_W = 8;          // dft internal data width
+localparam REFRESH_BRAM_CYCLES = 480; // when this gets to REFRESH_BRAM_CYCLES, read out the contents of fft local memory into pixbuf
 
 
 // lcd wires
@@ -67,6 +68,7 @@ reg fft_read = 0;
 reg [7:0] fft_sample = 0;
 wire fft_ready;
 wire [15:0] bin_out;
+reg [10:0] fft_cycles = 0;      // count number of times fft has been run
 
 // buttons
 assign LEDR_N = BTN_N;
@@ -181,7 +183,8 @@ always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-                fft_sample <= adc_data[11:3];
+                fft_cycles <= fft_cycles + 1;
+                fft_sample <= adc_data[7:0];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;
             end
@@ -195,14 +198,18 @@ always @(posedge pixclk) begin
         STATE_FFT_PROCESS: begin
             fft_start <= 1'b0;
             if(fft_ready) begin
-                fft_read <= 1'b1;
-                freq_bram_w <= 1'b1;
-                fft_state <= STATE_FFT_READ;
+                if(fft_cycles == REFRESH_BRAM_CYCLES) begin
+                    fft_read <= 1'b1;
+                    freq_bram_w <= 1'b1;
+                    fft_state <= STATE_FFT_READ;
+                end else
+                    fft_state <= STATE_FFT_WAIT;
             end
         end
 
         STATE_FFT_READ: begin
             // store all the squared bin values to BRAM
+            fft_cycles <= 0;
             freq_bram_wdata <= bin_out;
             freq_bram_waddr <= freq_bram_waddr + 1;
             if(freq_bram_waddr == 320) begin

@@ -72,11 +72,12 @@ module sdft
     reg [freq_w-1:0] bin_real, bin_imag;
 
     // square the imaginary output to get something real
-    dsp_mult_16 out_mult_real ( .clock(clk), .A(bin_real), .B(bin_real), .X(out_real_sq));
-    dsp_mult_16 out_mult_imag ( .clock(clk), .A(bin_imag), .B(bin_imag), .X(out_imag_sq));
+//    dsp_mult_16 out_mult_real ( .clock(clk), .A(bin_real), .B(bin_real), .X(out_real_sq));
+//    dsp_mult_16 out_mult_imag ( .clock(clk), .A(bin_imag), .B(bin_imag), .X(out_imag_sq));
     wire [31:0] out_real_sq, out_imag_sq;
     wire [31:0] f1, f2, f3, f4;
-
+    wire [freq_w-1:0] abs_out;
+    abs #(.width(freq_w)) abs_0 (.r(bin_real), .i(bin_imag), .a(abs_out));
     dsp_mult_16 complex_mult_f1 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_real), .X(f1));
     dsp_mult_16 complex_mult_f2 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + delta), .B(twid_imag), .X(f2));
     dsp_mult_16 complex_mult_f3 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_imag), .X(f3));
@@ -93,12 +94,10 @@ module sdft
 
             STATE_READ: begin
             // now do the multiplcation to a real number with the dsps
-            //    bin_out_real <= frequency_bins_real[bin_addr];
-            //    bin_out_imag <= frequency_bins_imag[bin_addr];
-                bin_imag <= frequency_bins_imag[bin_addr];
                 bin_real <= frequency_bins_real[bin_addr];
-                bin_out = (out_real_sq + out_imag_sq ) >>> 8;
+                bin_imag <= frequency_bins_imag[bin_addr];
                 state <= STATE_WAIT;
+                bin_out <= abs_out >> 7;
 
             end
 
@@ -111,25 +110,35 @@ module sdft
                 state <= STATE_CALC;
             end
 
+            /*
             STATE_LOAD_ROM: begin // 2
                 tw_addr <= tw_addr + 1; 
                 if(tw_addr == freq_bins -1) begin
                     tw_addr <= 0;
                     state <= STATE_FINISH;
                 end else
-                    state <= STATE_WAIT_ROM;
+                    state <= STATE_CALC;
             end
+            */
 
+            /*
             STATE_WAIT_ROM: begin // 3
                 state <= STATE_CALC;
             end
+            */
 
             STATE_CALC: begin // 4
-                frequency_bins_real[tw_addr] <= (f1 - f2) >>> 7;
-                frequency_bins_imag[tw_addr] <= (f3 + f4) >>> 7;
+                frequency_bins_real[tw_addr] <= (f1 - f2)  >>> 7; // divide back by 128 as coefficents are scaled up by 127
+                frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> 7;
 //                frequency_bins_real[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_real - (frequency_bins_imag[tw_addr] * twid_imag)) >>> 7;
 //                frequency_bins_imag[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_imag + (frequency_bins_imag[tw_addr] * twid_real)) >>> 7;
-                state <= STATE_LOAD_ROM;
+
+                tw_addr <= tw_addr + 1; 
+                if(tw_addr == freq_bins -1) begin
+                    tw_addr <= 0;
+                    state <= STATE_FINISH;
+                end else
+                    state <= STATE_CALC;
             end
 
             STATE_FINISH: begin
