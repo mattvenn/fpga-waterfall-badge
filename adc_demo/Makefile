@@ -60,4 +60,9 @@ debug-abs:
 	vvp abs_debug
 	gtkwave test.vcd gtk-abs.gtkw
 
+debug-sdft: 
+	iverilog -DDEBUG -o sdft_debug sdft_tb.v sdft.v dsp_mult.v twiddle_rom.v abs.v
+	vvp sdft_debug
+	gtkwave test.vcd gtk-sdft.gtkw
+
 .PHONY: prog_sram prog_flash reset_halt reset_boot clean

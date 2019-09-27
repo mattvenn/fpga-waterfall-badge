@@ -41,7 +41,7 @@ def gen_freq_bram():
 
 
 if __name__ == '__main__':
-    print("N: %d, width: %d, max (signed) %d" % (N, width, max_val))
     gen_twiddle()
     gen_freq_bram()
+    print("N: %d, width: %d, max (signed) %d" % (N, width, max_val))
 

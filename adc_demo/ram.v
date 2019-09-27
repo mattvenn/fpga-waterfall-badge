@@ -1,14 +1,19 @@
 `default_nettype none
 module ram 
+    #( 
+        parameter DATA_W = 8,
+        parameter ADDR_W = 17
+    )
     (
     // 320 x 240 = 76.8k
     input clk,
-    input [16:0] addr,
-    input [7:0] wdata,
+    input [ADDR_W-1:0] addr,
+    input [DATA_W-1:0] wdata,
     input w_enable,
-    output reg [7:0] rdata
+    output reg [DATA_W-1:0] rdata
     );
 
+    `ifndef DEBUG
    reg [3:0] wmask1, wmask2, wmask3;
    always @(*)
        case({w_enable, addr[16:14]})
@@ -45,10 +50,9 @@ module ram
                  8'b0;
    */
        
-   // wdata
+   // wdata, double the data, the wmask selects which spram is written to
    wire [15:0] wdata16 = { wdata, wdata };
 
-    `ifndef DEBUG
      
 	SB_SPRAM256KA spram_1 (
 		.ADDRESS(addr[13:0]),
@@ -90,9 +94,13 @@ module ram
 	);
 
     `else
-        assign rdata1 = 16'h0201;
-        assign rdata2 = 16'h0403;
-        assign rdata3 = 16'h0605;
+    reg [DATA_W-1:0] ram [(1 << ADDR_W)-1:0];
+    always @(posedge clk) begin
+        if(w_enable)
+            ram[addr] <= wdata;
+        else
+            rdata <= ram[addr];
+    end
     `endif
 endmodule
 

@@ -1,0 +1,177 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Fri Sep 27 09:47:18 2019
+[*]
+[dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
+[dumpfile_mtime] "Fri Sep 27 09:46:51 2019"
+[dumpfile_size] 18218507
+[savefile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/gtk-sdft.gtkw"
+[timestart] 116059
+[size] 2512 1573
+[pos] -1 -1
+*-6.000000 116539 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test.
+[treeopen] test.sdft_0.
+[sst_width] 253
+[signals_width] 337
+[sst_expanded] 1
+[sst_vpaned_height] 500
+@28
+test.clk
+test.fft_start
+test.fft_ready
+test.fft_read
+@22
+test.sdft_0.state[3:0]
+@8024
+test.fft_sample[7:0]
+@24
+test.fft_cycles[16:0]
+test.sdft_0.sample[7:0]
+@200
+-
+@420
+test.sdft_0.bin_imag[15:0]
+test.sdft_0.bin_real[15:0]
+@24
+test.sdft_0.abs_out[15:0]
+@10024
+test.sdft_0.abs_out[15:0]
+@20000
+-
+-
+@24
+test.sdft_0.bin_out[15:0]
+@10024
+>403
+test.sdft_0.bin_out[15:0]
+@20000
+>0
+-
+-
+-
+@c00200
+-freq bins
+@420
+test.sdft_0.\frequency_bins_imag[0][15:0]
+test.sdft_0.\frequency_bins_imag[1][15:0]
+test.sdft_0.\frequency_bins_imag[2][15:0]
+test.sdft_0.\frequency_bins_imag[3][15:0]
+test.sdft_0.\frequency_bins_imag[4][15:0]
+test.sdft_0.\frequency_bins_imag[5][15:0]
+test.sdft_0.\frequency_bins_imag[6][15:0]
+test.sdft_0.\frequency_bins_imag[7][15:0]
+test.sdft_0.\frequency_bins_imag[8][15:0]
+test.sdft_0.\frequency_bins_imag[9][15:0]
+test.sdft_0.\frequency_bins_imag[10][15:0]
+test.sdft_0.\frequency_bins_imag[11][15:0]
+test.sdft_0.\frequency_bins_imag[12][15:0]
+test.sdft_0.\frequency_bins_imag[13][15:0]
+test.sdft_0.\frequency_bins_imag[14][15:0]
+test.sdft_0.\frequency_bins_imag[15][15:0]
+test.sdft_0.\frequency_bins_imag[16][15:0]
+test.sdft_0.\frequency_bins_imag[17][15:0]
+test.sdft_0.\frequency_bins_imag[18][15:0]
+test.sdft_0.\frequency_bins_imag[19][15:0]
+test.sdft_0.\frequency_bins_imag[20][15:0]
+test.sdft_0.\frequency_bins_imag[21][15:0]
+test.sdft_0.\frequency_bins_imag[22][15:0]
+test.sdft_0.\frequency_bins_imag[23][15:0]
+test.sdft_0.\frequency_bins_imag[24][15:0]
+test.sdft_0.\frequency_bins_imag[25][15:0]
+test.sdft_0.\frequency_bins_imag[26][15:0]
+test.sdft_0.\frequency_bins_imag[27][15:0]
+test.sdft_0.\frequency_bins_imag[28][15:0]
+test.sdft_0.\frequency_bins_imag[29][15:0]
+test.sdft_0.\frequency_bins_imag[30][15:0]
+test.sdft_0.\frequency_bins_imag[31][15:0]
+test.sdft_0.\frequency_bins_real[0][15:0]
+test.sdft_0.\frequency_bins_real[1][15:0]
+test.sdft_0.\frequency_bins_real[2][15:0]
+test.sdft_0.\frequency_bins_real[3][15:0]
+test.sdft_0.\frequency_bins_real[4][15:0]
+test.sdft_0.\frequency_bins_real[5][15:0]
+test.sdft_0.\frequency_bins_real[6][15:0]
+test.sdft_0.\frequency_bins_real[7][15:0]
+test.sdft_0.\frequency_bins_real[8][15:0]
+test.sdft_0.\frequency_bins_real[9][15:0]
+test.sdft_0.\frequency_bins_real[10][15:0]
+test.sdft_0.\frequency_bins_real[11][15:0]
+test.sdft_0.\frequency_bins_real[12][15:0]
+test.sdft_0.\frequency_bins_real[13][15:0]
+test.sdft_0.\frequency_bins_real[14][15:0]
+test.sdft_0.\frequency_bins_real[15][15:0]
+test.sdft_0.\frequency_bins_real[16][15:0]
+test.sdft_0.\frequency_bins_real[17][15:0]
+test.sdft_0.\frequency_bins_real[18][15:0]
+test.sdft_0.\frequency_bins_real[19][15:0]
+test.sdft_0.\frequency_bins_real[20][15:0]
+test.sdft_0.\frequency_bins_real[21][15:0]
+test.sdft_0.\frequency_bins_real[22][15:0]
+test.sdft_0.\frequency_bins_real[23][15:0]
+test.sdft_0.\frequency_bins_real[24][15:0]
+test.sdft_0.\frequency_bins_real[25][15:0]
+test.sdft_0.\frequency_bins_real[26][15:0]
+test.sdft_0.\frequency_bins_real[27][15:0]
+test.sdft_0.\frequency_bins_real[28][15:0]
+test.sdft_0.\frequency_bins_real[29][15:0]
+test.sdft_0.\frequency_bins_real[30][15:0]
+test.sdft_0.\frequency_bins_real[31][15:0]
+@1401200
+-freq bins
+@8420
+test.sdft_0.delta[8:0]
+@c00200
+-samples
+@24
+test.sdft_0.\samples[0][7:0]
+test.sdft_0.\samples[1][7:0]
+test.sdft_0.\samples[2][7:0]
+test.sdft_0.\samples[3][7:0]
+test.sdft_0.\samples[4][7:0]
+test.sdft_0.\samples[5][7:0]
+test.sdft_0.\samples[6][7:0]
+test.sdft_0.\samples[7][7:0]
+test.sdft_0.\samples[8][7:0]
+test.sdft_0.\samples[9][7:0]
+test.sdft_0.\samples[10][7:0]
+test.sdft_0.\samples[11][7:0]
+test.sdft_0.\samples[12][7:0]
+test.sdft_0.\samples[13][7:0]
+test.sdft_0.\samples[14][7:0]
+test.sdft_0.\samples[15][7:0]
+test.sdft_0.\samples[16][7:0]
+test.sdft_0.\samples[17][7:0]
+test.sdft_0.\samples[18][7:0]
+test.sdft_0.\samples[19][7:0]
+test.sdft_0.\samples[20][7:0]
+test.sdft_0.\samples[21][7:0]
+test.sdft_0.\samples[22][7:0]
+test.sdft_0.\samples[23][7:0]
+test.sdft_0.\samples[24][7:0]
+test.sdft_0.\samples[25][7:0]
+test.sdft_0.\samples[26][7:0]
+test.sdft_0.\samples[27][7:0]
+test.sdft_0.\samples[28][7:0]
+test.sdft_0.\samples[29][7:0]
+test.sdft_0.\samples[30][7:0]
+test.sdft_0.\samples[31][7:0]
+@1401200
+-samples
+@22
+test.sdft_0.twid_imag[7:0]
+test.sdft_0.twid_real[7:0]
+@10420
+test.sdft_0.f1[31:0]
+test.sdft_0.f2[31:0]
+test.sdft_0.f1f2[32:0]
+test.sdft_0.f1f27[32:0]
+@200
+-
+@10420
+test.sdft_0.f3[31:0]
+test.sdft_0.f4[31:0]
+test.sdft_0.f3f4[32:0]
+test.sdft_0.f3f47[32:0]
+[pattern_trace] 1
+[pattern_trace] 0

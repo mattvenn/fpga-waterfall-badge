@@ -30,6 +30,7 @@ module sdft
     // twiddle factor ROM
     wire signed [data_w-1:0] twid_real;
     wire signed [data_w-1:0] twid_imag;
+
     twiddle_rom #(.addr_w(bin_addr_w), .data_w(data_w)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(twid_real), .dout_imag(twid_imag));
 
     // frequency bins RAM - double width + 2 to handle multiply
@@ -60,9 +61,9 @@ module sdft
     localparam STATE_WAIT           = 0;
     localparam STATE_START          = 1;
     localparam STATE_READ           = 2;
-    localparam STATE_LOAD_ROM       = 3;
-    localparam STATE_WAIT_ROM       = 4;
-    localparam STATE_CALC           = 5;
+    localparam STATE_CALC_1         = 3;
+    localparam STATE_CALC_2         = 4;
+    localparam STATE_CALC_3         = 5;
     localparam STATE_FINISH         = 6;
 
     reg [3:0] state = STATE_WAIT;
@@ -71,13 +72,19 @@ module sdft
 
     reg [freq_w-1:0] bin_real, bin_imag;
 
-    // square the imaginary output to get something real
-//    dsp_mult_16 out_mult_real ( .clock(clk), .A(bin_real), .B(bin_real), .X(out_real_sq));
-//    dsp_mult_16 out_mult_imag ( .clock(clk), .A(bin_imag), .B(bin_imag), .X(out_imag_sq));
-    wire [31:0] out_real_sq, out_imag_sq;
-    wire [31:0] f1, f2, f3, f4;
+    wire signed [31:0] f1, f2, f3, f4;
+    wire signed [32:0] f1f2, f3f4, f1f27, f3f47;
+    assign f1f2 = f1 - f2;
+    assign f3f4 = f3 + f4;
+    assign f1f27 = f1f2 >>> 7;
+    assign f3f47 = f3f4 >>> 7;
     wire [freq_w-1:0] abs_out;
     abs #(.width(freq_w)) abs_0 (.r(bin_real), .i(bin_imag), .a(abs_out));
+
+
+//                frequency_bins_real[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_real - (frequency_bins_imag[tw_addr] * twid_imag)) >>> 7;
+//                frequency_bins_imag[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_imag + (frequency_bins_imag[tw_addr] * twid_real)) >>> 7;
+
     dsp_mult_16 complex_mult_f1 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_real), .X(f1));
     dsp_mult_16 complex_mult_f2 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + delta), .B(twid_imag), .X(f2));
     dsp_mult_16 complex_mult_f3 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_imag), .X(f3));
@@ -96,9 +103,12 @@ module sdft
             // now do the multiplcation to a real number with the dsps
                 bin_real <= frequency_bins_real[bin_addr];
                 bin_imag <= frequency_bins_imag[bin_addr];
-                state <= STATE_WAIT;
-                bin_out <= abs_out >> 7;
+                bin_out <= abs_out >> 5;
 
+                if(read)
+                    state <= STATE_READ;
+                else
+                    state <= STATE_WAIT;
             end
 
             STATE_START: begin
@@ -107,38 +117,31 @@ module sdft
                 // store new sample
                 samples[sample_index] <= sample;
                 tw_addr <= 0;
-                state <= STATE_CALC;
+                state <= STATE_CALC_1;
             end
 
-            /*
-            STATE_LOAD_ROM: begin // 2
-                tw_addr <= tw_addr + 1; 
-                if(tw_addr == freq_bins -1) begin
-                    tw_addr <= 0;
-                    state <= STATE_FINISH;
-                end else
-                    state <= STATE_CALC;
+            STATE_CALC_1: begin
+                // wait for f1 - f4 multiplies to finish
+                state <= STATE_CALC_2;
             end
-            */
 
-            /*
-            STATE_WAIT_ROM: begin // 3
-                state <= STATE_CALC;
-            end
-            */
-
-            STATE_CALC: begin // 4
+            STATE_CALC_2: begin
+                // store results
                 frequency_bins_real[tw_addr] <= (f1 - f2)  >>> 7; // divide back by 128 as coefficents are scaled up by 127
                 frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> 7;
-//                frequency_bins_real[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_real - (frequency_bins_imag[tw_addr] * twid_imag)) >>> 7;
-//                frequency_bins_imag[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_imag + (frequency_bins_imag[tw_addr] * twid_real)) >>> 7;
 
+                // increment tw_addr
                 tw_addr <= tw_addr + 1; 
                 if(tw_addr == freq_bins -1) begin
                     tw_addr <= 0;
                     state <= STATE_FINISH;
                 end else
-                    state <= STATE_CALC;
+                    state <= STATE_CALC_3;
+            end
+
+            STATE_CALC_3: begin
+                // wait for twid imag and real to load, and new freq bins
+                state <= STATE_CALC_1;
             end
 
             STATE_FINISH: begin

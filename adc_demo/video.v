@@ -1,5 +1,10 @@
 `default_nettype none
-module video (input clk, //19.2MHz pixel clock in
+module video 
+#(
+    parameter H_VISIBLE = 10'd320,
+    parameter V_VISIBLE = 10'd240 
+)
+(input clk, //19.2MHz pixel clock in
                 input resetn,
                 input [23:0] rgb_data,
                 output visible,
@@ -11,24 +16,17 @@ module video (input clk, //19.2MHz pixel clock in
                 output reg lcd_vsync,
                 output reg lcd_den);
               
-`ifdef DEBUG           
-parameter h_visible = 10'd64;
-parameter v_visible = 10'd24;
-`else
-parameter h_visible = 10'd320;
-parameter v_visible = 10'd240;
-`endif
 parameter h_front = 10'd20;
 parameter h_sync = 10'd30;
 parameter h_back = 10'd38;
-parameter h_total = h_visible + h_front + h_sync + h_back;
+parameter h_total = H_VISIBLE + h_front + h_sync + h_back;
 
 parameter v_front = 10'd4;
 parameter v_sync = 10'd3;
 parameter v_back = 10'd15;
-parameter v_total = v_visible + v_front + v_sync + v_back;
+parameter v_total = V_VISIBLE + v_front + v_sync + v_back;
 
-wire lower_blank = v_pos > v_visible;
+wire lower_blank = v_pos > V_VISIBLE;
 
 reg [1:0] channel = 0;
 reg [9:0] h_pos = 0;
@@ -62,16 +60,16 @@ begin
       channel <= channel + 1;
     end
     lcd_den <= !visible;
-    lcd_hsync <= !((h_pos >= (h_visible + h_front)) && (h_pos < (h_visible + h_front + h_sync)));
-    lcd_vsync <= !((v_pos >= (v_visible + v_front)) && (v_pos < (v_visible + v_front + v_sync)));
+    lcd_hsync <= !((h_pos >= (H_VISIBLE + h_front)) && (h_pos < (H_VISIBLE + h_front + h_sync)));
+    lcd_vsync <= !((v_pos >= (V_VISIBLE + v_front)) && (v_pos < (V_VISIBLE + v_front + v_sync)));
     lcd_dat <= channel == 0 ? rgb_data[23:16] : 
                channel == 1 ? rgb_data[15:8]  :
                rgb_data[7:0];
   end
 end
 
-assign h_active = (h_pos < h_visible);
-assign v_active = (v_pos < v_visible);
+assign h_active = (h_pos < H_VISIBLE);
+assign v_active = (v_pos < V_VISIBLE);
 assign visible = h_active && v_active;
 
 endmodule

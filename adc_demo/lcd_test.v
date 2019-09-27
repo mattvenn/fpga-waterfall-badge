@@ -1,5 +1,16 @@
 `default_nettype none
-module top(
+module top 
+    #(
+    parameter GRADIENT_FILE = "GRADIENT_GREY_24.hex",
+    parameter SAMPLE_WIDTH = 12,   // ADC sample bit depth - actually ADC is only 12 bit
+    parameter FREQ_BINS = 320,       // number of frequency bins - must update twiddle rom if changed
+    parameter ADDR_W = 9,          // number of address lines needed for freq bins
+    parameter DATA_W = 8,          // dft internal data width
+    parameter REFRESH_BRAM_CYCLES = 480, // when this gets to REFRESH_BRAM_CYCLES, read out the contents of fft local memory into pixbuf
+    parameter H_VISIBLE = 10'd320,
+    parameter V_VISIBLE = 10'd240 
+    )
+    (
     input clock_in,
     input BTN_N,
     output LEDR_N, LEDG_N,
@@ -15,13 +26,6 @@ module top(
     input wire adc_sd
     
     );
-localparam GRADIENT_FILE = "GRADIENT_COLOUR_24.hex";
-localparam SAMPLE_WIDTH = 12;   // ADC sample bit depth - actually ADC is only 12 bit
-localparam FREQ_BINS = 320;       // number of frequency bins - must update twiddle rom if changed
-localparam ADDR_W = 9;          // number of address lines needed for freq bins
-localparam DATA_W = 8;          // dft internal data width
-localparam REFRESH_BRAM_CYCLES = 480; // when this gets to REFRESH_BRAM_CYCLES, read out the contents of fft local memory into pixbuf
-
 
 // lcd wires
 wire pixclk;
@@ -92,7 +96,7 @@ ram frame_buffer_0 (.clk(pixclk), .addr(frame_buf_addr), .wdata(frame_buf_wdata)
 freq_bram #(.addr_w(ADDR_W), .data_w(DATA_W)) freq_bram_0(.w_clk(pixclk), .r_clk(pixclk), .w_en(freq_bram_w), .r_en(freq_bram_r), .d_in(freq_bram_wdata), .d_out(freq_bram_rdata), .r_addr(freq_bram_bin), .w_addr(freq_bram_waddr));
 
 // lcd driver
-video video_0 (.clk(pixclk), //20.2MHz pixel clock in
+video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //20.2MHz pixel clock in
                   .visible(visible),
                   .lower_blank(lower_blank),
                   .resetn(locked),
@@ -123,7 +127,7 @@ always @(posedge pixclk) begin
             frame_buf_addr <= frame_buf_addr + 1;
             frame_buf_wdata <= 0;
             frame_buf_wenable <= 1;
-            if(frame_buf_addr == 320 * 240) begin
+            if(frame_buf_addr == H_VISIBLE * V_VISIBLE) begin
                 pix_state <= STATE_VIDEO;
                 frame_buf_wenable <= 0;
             end
@@ -132,7 +136,7 @@ always @(posedge pixclk) begin
 
         // read pixel from ram until get to lower blanking. 
         STATE_VIDEO: begin
-            y_offset_mod <= (y + y_offset) >= 240 ? y + y_offset - 240 : y+y_offset;
+            y_offset_mod <= (y + y_offset) >= V_VISIBLE ? y + y_offset - V_VISIBLE : y+y_offset;
             frame_buf_addr <= x + (((y_offset_mod << 2) + y_offset_mod)<<6); // optimisation for y * 320
             if(lower_blank) begin
                 scroll_delay <= scroll_delay + 1;
@@ -158,7 +162,7 @@ always @(posedge pixclk) begin
                 pix_state <= STATE_WAIT_VIDEO;
 
                 y_offset <= y_offset + 1; // scroll 1 more line
-                if(y_offset == 240)
+                if(y_offset == V_VISIBLE)
                     y_offset <= 0;
             end
         end
@@ -176,6 +180,7 @@ localparam STATE_FFT_WAIT = 0;
 localparam STATE_FFT_WAIT_START = 1;
 localparam STATE_FFT_PROCESS = 2;
 localparam STATE_FFT_READ = 3;
+localparam STATE_FFT_READ_WAIT = 4;
 
 reg [3:0] fft_state = STATE_FFT_WAIT;
 // sample data as fast as possible
@@ -208,16 +213,20 @@ always @(posedge pixclk) begin
         end
 
         STATE_FFT_READ: begin
-            // store all the squared bin values to BRAM
+            // store all the fft bin values to BRAM
             fft_cycles <= 0;
-            freq_bram_wdata <= bin_out;
             freq_bram_waddr <= freq_bram_waddr + 1;
-            if(freq_bram_waddr == 320) begin
+            fft_state <= STATE_FFT_READ_WAIT;
+            if(freq_bram_waddr == FREQ_BINS) begin
                 freq_bram_waddr <= 0;
                 freq_bram_w <= 1'b0;
                 fft_read <= 1'b0;
                 fft_state <= STATE_FFT_WAIT;
             end
+        end
+        STATE_FFT_READ_WAIT: begin
+            freq_bram_wdata <= bin_out;
+            fft_state <= STATE_FFT_READ;
         end
 
     endcase
