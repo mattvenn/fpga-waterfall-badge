@@ -14,6 +14,8 @@ module top
     input clock_in,
     input BTN_N,
     output LEDR_N, LEDG_N,
+    output P2_1,
+    output LED_BLU_N,
     output lcd_clk,
     output [7:0] lcd_dat,
     output lcd_hsync,
@@ -181,7 +183,7 @@ localparam STATE_FFT_WAIT_START = 1;
 localparam STATE_FFT_PROCESS = 2;
 localparam STATE_FFT_READ = 3;
 localparam STATE_FFT_READ_WAIT = 4;
-
+assign P2_1 = fft_start;
 reg [3:0] fft_state = STATE_FFT_WAIT;
 // sample data as fast as possible
 always @(posedge pixclk) begin
@@ -189,6 +191,7 @@ always @(posedge pixclk) begin
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
                 fft_cycles <= fft_cycles + 1;
+//                fft_sample <= adc_data[7:0];
                 fft_sample <= adc_data[11:4];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;
