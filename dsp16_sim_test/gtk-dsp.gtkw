@@ -1,0 +1,29 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sun Sep 29 17:01:00 2019
+[*]
+[dumpfile] "/home/matt/fpga/dsp16_test/test.vcd"
+[dumpfile_mtime] "Sun Sep 29 17:00:48 2019"
+[dumpfile_size] 7890
+[savefile] "/home/matt/fpga/dsp16_test/gtk-dsp.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-2.955058 3 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 223
+[signals_width] 242
+[sst_expanded] 1
+[sst_vpaned_height] 152
+@28
+test.clk
+@420
+test.a[15:0]
+test.b[15:0]
+@200
+-
+@420
+test.O[31:0]
+@421
+test.compare[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
