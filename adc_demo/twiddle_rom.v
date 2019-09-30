@@ -3,18 +3,18 @@ module twiddle_rom
 #(
     parameter FILE_REAL = "twiddle_real.list",
     parameter FILE_IMAJ = "twiddle_imag.list",
-    parameter addr_w    = 9,
-    parameter data_w    = 8
+    parameter ADDR_W    = 9,
+    parameter DATA_W    = 8
 )
 (
     input wire                  clk,
-    input wire [addr_w-1:0]     addr,
-    output reg [data_w-1:0]     dout_real,
-    output reg [data_w-1:0]     dout_imag
+    input wire [ADDR_W-1:0]     addr,
+    output reg signed [15:0]     dout_real,
+    output reg signed [15:0]     dout_imag
 );
 
-    reg [data_w-1:0] rom_real [(1 << addr_w)-1:0];
-    reg [data_w-1:0] rom_imag [(1 << addr_w)-1:0];
+    reg signed [DATA_W-1:0] rom_real [(1 << ADDR_W)-1:0];
+    reg signed [DATA_W-1:0] rom_imag [(1 << ADDR_W)-1:0];
 
     initial begin
         if (FILE_REAL) $readmemh(FILE_REAL, rom_real);

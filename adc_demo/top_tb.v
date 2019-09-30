@@ -27,7 +27,7 @@ module test;
             $dumpvars(4, top_0.freq_bram_0.ram[i]);
         end
             */
-        # 8000000;
+        # 5000000;
         $finish;
 
     end
@@ -41,7 +41,7 @@ module test;
         ) top_0( .clock_in(clk), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd));
 //    top top_0( .clock_in(clk), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd));
     // period is us 1000 = 0.001s = 1000hz
-    adc_model #(.PERIOD(1000)) adc_model_0(.run(run), .clk(adc_clk), .cs(adc_cs), .sd(adc_sd), .done(done));
+    adc_model #(.PERIOD(2000)) adc_model_0(.run(run), .clk(adc_clk), .cs(adc_cs), .sd(adc_sd), .done(done));
 
     // clock at 20MHz
     always #25 clk = !clk;

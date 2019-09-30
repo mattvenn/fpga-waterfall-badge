@@ -1,7 +1,7 @@
 `default_nettype none
 module top 
     #(
-    parameter GRADIENT_FILE = "GRADIENT_GREY_24.hex",
+    parameter GRADIENT_FILE = "GRADIENT_COLOUR_24.hex",
     parameter SAMPLE_WIDTH = 12,   // ADC sample bit depth - actually ADC is only 12 bit
     parameter FREQ_BINS = 320,       // number of frequency bins - must update twiddle rom if changed
     parameter ADDR_W = 9,          // number of address lines needed for freq bins
@@ -109,7 +109,7 @@ video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //2
                   .lcd_den(lcd_den));
 
 // sliding dft
-sdft #(.data_w(DATA_W), .freq_bins(FREQ_BINS), .freq_w(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
+sdft #(.DATA_W(DATA_W), .FREQ_BINS(FREQ_BINS), .FREQ_W(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
 
 // state machine for scrolling pixel buffer
 localparam STATE_RESET      = 1;
@@ -189,7 +189,7 @@ always @(posedge pixclk) begin
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
                 fft_cycles <= fft_cycles + 1;
-                fft_sample <= adc_data[7:0];
+                fft_sample <= adc_data[11:4];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;
             end

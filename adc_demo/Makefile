@@ -9,12 +9,12 @@ help:
 	@echo "make clean             remove output files"
 	@echo
 
-SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v
+SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v 
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 14
+SEED = 10
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 lcd_test.json: $(SOURCES)
@@ -41,7 +41,7 @@ clean:
 	rm -f lcd_test.json lcd_test.asc lcd_test.bin *log
 
 debug: 
-	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES) adc_model.v
+	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES) adc_model.v cells_sim.v
 	vvp top_debug
 	gtkwave test.vcd gtk-top.gtkw
 

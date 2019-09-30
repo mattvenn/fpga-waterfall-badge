@@ -1,47 +1,48 @@
 `default_nettype none
 module sdft
 #(
-    parameter data_w = 8, 
-    parameter freq_bins = 320, // 320
-    parameter freq_w    = 16,
+    parameter DATA_W = 8, 
+    parameter FREQ_BINS = 64, // 320
+    parameter FREQ_W    = 16,
     parameter FILE_REAL = "twiddle_real.list",
     parameter FILE_IMAJ = "twiddle_imag.list"
 )
 (
     input wire                              clk,
-    input wire [data_w-1:0]                 sample,
+    input wire [DATA_W-1:0]                 sample,
     input wire                              start,
     input wire                              read,
-    input wire [bin_addr_w-1:0]             bin_addr,
+    input wire [BIN_ADDR_W-1:0]             bin_addr,
 
-    output reg [freq_w-1:0]                 bin_out,
+    output reg [FREQ_W-1:0]                 bin_out,
     output wire                             ready
 );
 
     // width of addr needed to address the frequency bins
-    localparam bin_addr_w = $clog2(freq_bins);
+    localparam BIN_ADDR_W = $clog2(FREQ_BINS);
 
     // register for the twiddle factor ROM
-    reg [bin_addr_w-1:0] tw_addr;
+    reg [BIN_ADDR_W-1:0] tw_addr;
 
     // register for sample index
-    reg [bin_addr_w-1:0] sample_index;
+    reg [BIN_ADDR_W-1:0] sample_index;
 
     // twiddle factor ROM
-    wire signed [data_w-1:0] twid_real;
-    wire signed [data_w-1:0] twid_imag;
+    wire signed [FREQ_W-1:0] twid_real;
+    wire signed [FREQ_W-1:0] twid_imag;
 
-    twiddle_rom #(.addr_w(bin_addr_w), .data_w(data_w)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(twid_real), .dout_imag(twid_imag));
+    twiddle_rom #(.ADDR_W(BIN_ADDR_W), .DATA_W(DATA_W)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(twid_real), .dout_imag(twid_imag));
 
-    // frequency bins RAM - double width + 2 to handle multiply
-    reg signed [freq_w-1:0] frequency_bins_real [freq_bins-1:0];
-    reg signed [freq_w-1:0] frequency_bins_imag [freq_bins-1:0];
+    // frequency bins RAM - these get inferred as BRAMs
+    reg signed [FREQ_W-1:0] frequency_bins_real [FREQ_BINS-1:0];
+    reg signed [FREQ_W-1:0] frequency_bins_imag [FREQ_BINS-1:0];
+
 
     // sample storage
-    reg [data_w-1:0] samples [freq_bins-1:0];
+    reg [DATA_W-1:0] samples [FREQ_BINS-1:0];
 
-    // delta storage (1 more than data_width to handle subtraction)
-    reg signed [data_w:0] delta;
+    // delta storage (1 more than DATA_Width to handle subtraction)
+    reg signed [DATA_W:0] delta;
 
     integer j;
     initial begin
@@ -49,7 +50,7 @@ module sdft
         tw_addr = 0; // can't have initial begin or BRAM won't infer
         sample_index = 0;
         delta = 0;
-        for(j = 0; j < freq_bins; j = j + 1)  begin
+        for(j = 0; j < FREQ_BINS; j = j + 1)  begin
             samples[j] <= 0;
             frequency_bins_real[j] <= 0;
             frequency_bins_imag[j] <= 0;
@@ -70,7 +71,7 @@ module sdft
 
     assign ready = (state == STATE_WAIT) ? 1'b1 : 1'b0;
 
-    reg [freq_w-1:0] bin_real, bin_imag;
+    reg signed [FREQ_W-1:0] bin_real, bin_imag;
 
     wire signed [31:0] f1, f2, f3, f4;
     wire signed [32:0] f1f2, f3f4, f1f27, f3f47;
@@ -78,12 +79,9 @@ module sdft
     assign f3f4 = f3 + f4;
     assign f1f27 = f1f2 >>> 7;
     assign f3f47 = f3f4 >>> 7;
-    wire [freq_w-1:0] abs_out;
-    abs #(.width(freq_w)) abs_0 (.r(bin_real), .i(bin_imag), .a(abs_out));
+    wire [FREQ_W-1:0] abs_out;
+    abs #(.width(FREQ_W)) abs_0 (.r(bin_real), .i(bin_imag), .a(abs_out));
 
-
-//                frequency_bins_real[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_real - (frequency_bins_imag[tw_addr] * twid_imag)) >>> 7;
-//                frequency_bins_imag[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_imag + (frequency_bins_imag[tw_addr] * twid_real)) >>> 7;
 
     dsp_mult_16 complex_mult_f1 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_real), .X(f1));
     dsp_mult_16 complex_mult_f2 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + delta), .B(twid_imag), .X(f2));
@@ -129,26 +127,33 @@ module sdft
                 // store results
                 frequency_bins_real[tw_addr] <= (f1 - f2)  >>> 7; // divide back by 128 as coefficents are scaled up by 127
                 frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> 7;
+//                frequency_bins_real[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_real - (frequency_bins_imag[tw_addr] * twid_imag)) >>> 5;
+//                frequency_bins_imag[tw_addr] <= ((frequency_bins_real[tw_addr] + delta) * twid_imag + (frequency_bins_imag[tw_addr] * twid_real)) >>> 5;
+//                    frequency_bins_real[tw_addr] <= (FREQ_BINS - tw_addr) << 6; // this works as expected - the whole screen is filled
+//                    frequency_bins_imag[tw_addr] <= (FREQ_BINS - tw_addr) << 6;
 
-                // increment tw_addr
-                tw_addr <= tw_addr + 1; 
-                if(tw_addr == freq_bins -1) begin
-                    tw_addr <= 0;
-                    state <= STATE_FINISH;
-                end else
-                    state <= STATE_CALC_3;
+                state <= STATE_CALC_3;
+
             end
 
             STATE_CALC_3: begin
                 // wait for twid imag and real to load, and new freq bins
-                state <= STATE_CALC_1;
+                // increment tw_addr
+
+                tw_addr <= tw_addr + 1; 
+
+                if(tw_addr == FREQ_BINS -1) begin
+                    tw_addr <= 0;
+                    state <= STATE_FINISH;
+                end else
+                    state <= STATE_CALC_1;
             end
 
             STATE_FINISH: begin
                 // increment sample index (same as rotating)
                 sample_index <= sample_index + 1;
                 // reset index if it wraps
-                if(sample_index == freq_bins -1)
+                if(sample_index == FREQ_BINS -1)
                     sample_index <= 0;
                 state <= STATE_WAIT;
             end 
