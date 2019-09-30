@@ -32,12 +32,12 @@ def gen_twiddle():
     imag_fh = open("twiddle_imag.list", 'w')
     coeffs = []
     for i in range(int(N)):
-        cos_v = (max_val * math.cos(2 * math.pi * i / N))
-        sin_v = (max_val * math.sin(2 * math.pi * i / N))
+        cos_v = (max_val * math.cos(2*math.pi * i / N))
+        sin_v = (max_val * math.sin(2*math.pi * i / N))
         coeffs.append(complex(cos_v, sin_v))
         print("%7.2f %7.2f -> %s %s" % (cos_v, sin_v, hex3(int(cos_v)), hex3(int(sin_v))))
-        real_fh.write(hex3(int(cos_v)) + "\n")
-        imag_fh.write(hex3(int(sin_v)) + "\n")
+        real_fh.write(hex3(int(cos_v)) + " // %3d => %d\n" % (i, int(cos_v)))
+        imag_fh.write(hex3(int(sin_v)) + " // %3d => %d\n" % (i, int(sin_v)))
 #        real_fh.write(num_to_bin(int(cos_v), width) + "\n")
 #        imag_fh.write(num_to_bin(int(sin_v), width) + "\n")
     
@@ -69,6 +69,5 @@ if __name__ == '__main__':
     max_val = (2 ** width - 1)/2
 
     gen_twiddle()
-    gen_freq_bram()
     print("N: %d, width: %d, max (signed) %d" % (N, width, max_val))
 
