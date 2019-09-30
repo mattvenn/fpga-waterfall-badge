@@ -1,42 +1,170 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Wed Sep 25 14:14:07 2019
+[*] Mon Sep 30 09:17:03 2019
 [*]
 [dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/test.vcd"
-[dumpfile_mtime] "Wed Sep 25 14:12:50 2019"
-[dumpfile_size] 11517929
+[dumpfile_mtime] "Mon Sep 30 09:16:48 2019"
+[dumpfile_size] 52429977
 [savefile] "/home/matt/work/fpga/fpga-waterfall-badge/adc_demo/gtk-top.gtkw"
-[timestart] 183067
-[size] 1939 1187
-[pos] 384 197
-*-7.000000 183599 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 4416000
+[size] 1200 1332
+[pos] 0 112
+*-16.000000 4515575 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
-[treeopen] test.top0.
+[treeopen] test.top_0.
+[treeopen] test.top_0.sdft_0.
 [sst_width] 253
-[signals_width] 370
+[signals_width] 483
 [sst_expanded] 1
-[sst_vpaned_height] 364
+[sst_vpaned_height] 415
 @28
 test.clk
-test.top0.pixclk
+@200
+-
+@8022
+test.top_0.video_0.rgb_data[23:0]
 @22
-test.top0.lcd_dat[7:0]
+test.top_0.rgb_data_gradient[23:0]
+@8022
+test.adc_model_0.sample_data[11:0]
+@200
+-
+@24
+test.top_0.fft_cycles[10:0]
+@200
+-
+@c00200
+-adc
+@28
++{start} test.top_0.sdft_0.start
+test.top_0.sdft_0.ready
+@8024
+test.top_0.sdft_0.sample[7:0]
+@1401200
+-adc
+@20000
+-
+@800200
+-video
+@2024
+^1 /home/matt/work/fpga/fpga-waterfall-badge/adc_demo/video_state_filter.txt
+test.top_0.pix_state[2:0]
+@8024
+test.top_0.x[8:0]
+test.top_0.y[7:0]
+@28
+test.top_0.video_0.visible
+test.top_0.lower_blank
+test.top_0.scroll_delay
+test.top_0.freq_bram_r
+@22
+test.top_0.gradientROM_0.dout[23:0]
+test.top_0.frame_buf_rdata[7:0]
+@200
+-
+-gradient rom
+@22
+test.top_0.gradientROM_0.addr[7:0]
+test.top_0.gradientROM_0.dout[23:0]
+@1000200
+-video
+@200
+-
+@800200
+-freq ram -> video ram
+@28
+test.top_0.freq_bram_r
+@8022
+test.top_0.freq_bram_rdata[7:0]
+@24
+test.top_0.freq_bram_bin[8:0]
+@28
+test.top_0.freq_bram_w
+@10420
+test.top_0.sdft_0.bin_out[15:0]
+@24
+test.top_0.freq_bram_waddr[8:0]
+@10024
+test.top_0.freq_bram_wdata[7:0]
+@200
+-frame buf
+@28
+test.top_0.frame_buf_wenable
+@10024
+test.top_0.frame_buf_wdata[7:0]
+@8022
+test.top_0.frame_buf_rdata[7:0]
+@24
+test.top_0.frame_buf_addr[16:0]
+@1000200
+-freq ram -> video ram
+@20000
+-
+@2024
+^2 /home/matt/work/fpga/fpga-waterfall-badge/adc_demo/fft_state_filter.txt
+test.top_0.fft_state[3:0]
+@20000
+-
+@800200
+-fft
+@28
+test.top_0.sdft_0.clk
+@22
+test.top_0.sdft_0.delta[8:0]
+@420
+test.top_0.sdft_0.f1[31:0]
+test.top_0.sdft_0.f2[31:0]
+test.top_0.sdft_0.f3[31:0]
+test.top_0.sdft_0.f4[31:0]
+@200
+-
+@420
++{f1 - f2} test.top_0.sdft_0.f1f2[32:0]
++{f3 + f4} test.top_0.sdft_0.f3f4[32:0]
+test.top_0.sdft_0.f1f27[32:0]
+test.top_0.sdft_0.f3f47[32:0]
 @200
 -
 @28
-test.top0.lower_blank
+test.top_0.sdft_0.read
+test.top_0.sdft_0.ready
 @22
-test.top0.x[8:0]
-test.top0.y[7:0]
+test.top_0.sdft_0.sample[7:0]
 @28
-test.top0.visible
-@200
--
--
-@25
-test.top0.frame_buf_addr[16:0]
+test.top_0.sdft_0.start
+@22
+test.top_0.sdft_0.state[3:0]
+test.top_0.sdft_0.twid_imag[7:0]
+test.top_0.sdft_0.twid_real[7:0]
+@420
+test.top_0.sdft_0.bin_real[15:0]
+test.top_0.sdft_0.bin_imag[15:0]
+@c00420
+test.top_0.sdft_0.bin_out[15:0]
 @28
-test.top0.state[2:0]
-test.top0.scroll_delay[2:0]
+(0)test.top_0.sdft_0.bin_out[15:0]
+(1)test.top_0.sdft_0.bin_out[15:0]
+(2)test.top_0.sdft_0.bin_out[15:0]
+(3)test.top_0.sdft_0.bin_out[15:0]
+(4)test.top_0.sdft_0.bin_out[15:0]
+(5)test.top_0.sdft_0.bin_out[15:0]
+(6)test.top_0.sdft_0.bin_out[15:0]
+(7)test.top_0.sdft_0.bin_out[15:0]
+(8)test.top_0.sdft_0.bin_out[15:0]
+(9)test.top_0.sdft_0.bin_out[15:0]
+(10)test.top_0.sdft_0.bin_out[15:0]
+(11)test.top_0.sdft_0.bin_out[15:0]
+(12)test.top_0.sdft_0.bin_out[15:0]
+(13)test.top_0.sdft_0.bin_out[15:0]
+(14)test.top_0.sdft_0.bin_out[15:0]
+(15)test.top_0.sdft_0.bin_out[15:0]
+@1401200
+-group_end
+@24
+>-1225
+test.top_0.sdft_0.abs_out[15:0]
+@1000200
+>0
+-fft
 [pattern_trace] 1
 [pattern_trace] 0
