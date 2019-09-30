@@ -4,7 +4,7 @@ NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 10
+SEED = 15
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 

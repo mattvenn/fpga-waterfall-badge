@@ -74,7 +74,6 @@ reg fft_read = 0;
 reg [7:0] fft_sample = 0;
 wire fft_ready;
 wire [15:0] bin_out;
-reg [10:0] fft_cycles = 0;      // count number of times fft has been run
 
 // buttons
 assign LEDR_N = BTN_N;
@@ -190,7 +189,6 @@ always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-                fft_cycles <= fft_cycles + 1;
 //                fft_sample <= adc_data[7:0];
                 fft_sample <= adc_data[11:4];
                 fft_start <= 1'b1;
@@ -206,30 +204,21 @@ always @(posedge pixclk) begin
         STATE_FFT_PROCESS: begin
             fft_start <= 1'b0;
             if(fft_ready) begin
-                if(fft_cycles == REFRESH_BRAM_CYCLES) begin
-                    fft_read <= 1'b1;
-                    freq_bram_w <= 1'b1;
-                    fft_state <= STATE_FFT_READ;
-                end else
-                    fft_state <= STATE_FFT_WAIT;
+                freq_bram_w <= 1'b1;
+                fft_read <= 1'b1;
+                fft_state <= STATE_FFT_READ;
+                freq_bram_waddr <= freq_bram_waddr + 1;
             end
         end
 
         STATE_FFT_READ: begin
-            // store all the fft bin values to BRAM
-            fft_cycles <= 0;
-            freq_bram_waddr <= freq_bram_waddr + 1;
-            fft_state <= STATE_FFT_READ_WAIT;
+            freq_bram_w <= 1'b0;
+            fft_read <= 1'b0;
+            freq_bram_wdata <= bin_out;
             if(freq_bram_waddr == FREQ_BINS) begin
                 freq_bram_waddr <= 0;
-                freq_bram_w <= 1'b0;
-                fft_read <= 1'b0;
-                fft_state <= STATE_FFT_WAIT;
             end
-        end
-        STATE_FFT_READ_WAIT: begin
-            freq_bram_wdata <= bin_out;
-            fft_state <= STATE_FFT_READ;
+            fft_state <= STATE_FFT_WAIT;
         end
 
     endcase

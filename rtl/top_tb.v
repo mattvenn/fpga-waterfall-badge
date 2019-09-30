@@ -33,9 +33,9 @@ module test;
     end
 
     top #(
-        .FREQ_BINS(320), 
+        .FREQ_BINS(64), 
         .REFRESH_BRAM_CYCLES(20),
-        .H_VISIBLE(320),
+        .H_VISIBLE(64),
         .V_VISIBLE(10),
         .GRADIENT_FILE("GRADIENT_GREY_24.hex")
         ) top_0( .clock_in(clk), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd));
