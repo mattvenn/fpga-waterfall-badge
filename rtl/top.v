@@ -6,7 +6,6 @@ module top
     parameter FREQ_BINS = 320,       // number of frequency bins - must update twiddle rom if changed
     parameter ADDR_W = 9,          // number of address lines needed for freq bins
     parameter DATA_W = 8,          // dft internal data width
-    parameter REFRESH_BRAM_CYCLES = 480, // when this gets to REFRESH_BRAM_CYCLES, read out the contents of fft local memory into pixbuf
     parameter H_VISIBLE = 10'd320,
     parameter V_VISIBLE = 10'd240 
     )
