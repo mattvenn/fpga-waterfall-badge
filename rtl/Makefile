@@ -1,15 +1,5 @@
-help:
-	@echo
-	@echo "make lcd_test.json      run synthesis, generate JSON netlist"
-	@echo "make lcd_test.asc       run place and route, generate IceStorm ASCII file"
-	@echo "make lcd_test.bin       run timing analysis, generate iCE40 BIN file"
-	@echo
-	@echo "make prog              serial flash programming, does not touch FPGA"
-	@echo
-	@echo "make clean             remove output files"
-	@echo
-
-SOURCES= adc.v lcd_pll.v lcd_test.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v 
+PROJECT = fft-lcd
+SOURCES= adc.v lcd_pll.v top.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v 
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
@@ -17,8 +7,11 @@ ICEBREAKER_PACKAGE = sg48
 SEED = 10
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
-lcd_test.json: $(SOURCES)
-	yosys -l yosys.log -p 'synth_ice40 -top top -json lcd_test.json' $(SOURCES)
+
+all: $(PROJECT).bin
+
+%.json: $(SOURCES)
+	yosys -l yosys.log -p 'synth_ice40 -top top -json $(PROJECT).json' $(SOURCES)
 
 update_luts:
 	~/logLUTs/logLUTs.py --message "$(GIT_MSG)" \
@@ -27,18 +20,18 @@ update_luts:
     --nextpnr-log nextpnr.log \
     --csvfile LUTs.csv
 
-lcd_test.asc: lcd_test.json icebreaker.pcf
+%.asc: %.json $(ICEBREAKER_PIN_DEF) 
 	${NEXTPNR_DIR}/nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
 	~/logLUTs/logLUTs.py --no-store
 
-lcd_test.bin: lcd_test.asc
-	icepack lcd_test.asc lcd_test.bin
+%.bin: %.asc
+	icepack $< $@
 
-prog: lcd_test.bin
+prog: $(PROJECT).bin
 	iceprog $<
 
 clean:
-	rm -f lcd_test.json lcd_test.asc lcd_test.bin *log
+	rm -f ${PROJECT}.json ${PROJECT}.asc ${PROJECT}.bin *log
 
 debug: 
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES) adc_model.v cells_sim.v
