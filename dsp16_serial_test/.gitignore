@@ -1,0 +1,7 @@
+*.asc
+*.bin
+*.json
+*.log
+*.list
+*_debug
+*.vcd
