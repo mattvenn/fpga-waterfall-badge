@@ -1,4 +1,4 @@
-SOURCES = adc.v baudgen.v dividerp1.v top.v uart_tx.v
+SOURCES = adc.v baudgen.v dividerp1.v top.v uart_tx.v dsp_mult.v twiddle_rom.v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf

@@ -27,14 +27,15 @@ def sample(store=False):
     y = []
     x = []
     for i in range(samples/2-1):
-        val, =struct.unpack('<H', data[i*2] + data[i*2+1])
+        val, =struct.unpack('h', data[i*2] + data[i*2+1])
 
         y.append(val)
         x.append(i)
 
     if store:
         with open("data.csv", 'w') as fh:
-            fh.writelines([str(v) + "\n" for v in y])
+            for i in range(len(x)):
+                fh.writelines("%d, %d\n" % (x[i],y[i]))
 
     return x, y
 

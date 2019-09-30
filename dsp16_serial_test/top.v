@@ -21,6 +21,10 @@ module top (input wire clk,  //-- Reloj del sistema
 
 //-- Velocidad a la que hacer las pruebas
 parameter BAUD = `B115200;
+parameter DATA_W = 8; 
+parameter FREQ_BINS = 320;
+localparam BIN_ADDR_W = $clog2(FREQ_BINS);
+
 
 
 //-- Reset
@@ -70,7 +74,7 @@ parameter AW = 12; // address width - 4096 samples
 localparam NPOS = 2 ** AW;
 
 reg [AW-1:0] samp_count;
-reg [DW-1: 0] samples [0: NPOS-1];
+reg signed [DW-1: 0] samples [0: NPOS-1];
 
 localparam SAMPLE_W = 12;
 
@@ -87,13 +91,24 @@ end
 //-- Contador de caracteres
 //-- Cuando la microorden cena esta activada, se incrementa
 reg [AW:0] car_count; // 1 bit more than AW
+reg [BIN_ADDR_W-1:0] tw_addr = 0;
+
+wire [31:0] mult_out;
+
+dsp_mult_16 mult16 ( .clock(clk), .A(A), .B(B), .X(mult_out));
+wire signed [7:0] realA, realB;
+// sign extend
+wire signed [15:0] A ; //= { {8{realA[7]}}, realA[7:0] };
+wire signed [15:0] B ; //= { {8{realB[7]}}, realB[7:0] };
+twiddle_rom #(.ADDR_W(BIN_ADDR_W), .DATA_W(8)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(A), .dout_imag(B));
 
 always @(posedge clk) begin
     if(rstn == 0)
         samp_count <= 0;
     else if (samp_en) begin
         samp_count <= samp_count + 1;
-        samples[samp_count] <= samp_count;
+        tw_addr <= tw_addr + 1;
+        samples[samp_count] <= mult_out[15:0];
     end else begin
         samp_count <= 0;
     end
