@@ -2,8 +2,7 @@
 module freq_bram
 #(
     parameter addr_w    = 9,
-    parameter data_w    = 8,
-    parameter FILE      = "freq_bram.list"
+    parameter data_w    = 8
 )
 (
     input wire                  r_clk,
@@ -19,8 +18,14 @@ module freq_bram
 
     reg [data_w-1:0] ram [(1 << addr_w)-1:0];
 
+    integer j;
     initial begin
-        if (FILE) $readmemh(FILE, ram);
+        `ifdef DEBUG
+        for(j = 0; j < (2<<addr_w); j = j + 1)  begin
+            ram[j] = 0;
+        end
+        d_out = 0;
+        `endif
     end
 
     always @(posedge w_clk) begin

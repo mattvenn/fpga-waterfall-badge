@@ -31,7 +31,7 @@ def gen_twiddle():
     real_fh = open("twiddle_real.list", 'w')
     imag_fh = open("twiddle_imag.list", 'w')
     coeffs = []
-    for i in range(int(N)):
+    for i in range(int(N/2)):
         cos_v = (max_val * math.cos(2*math.pi * i / N))
         sin_v = (max_val * math.sin(2*math.pi * i / N))
         coeffs.append(complex(cos_v, sin_v))
@@ -41,8 +41,8 @@ def gen_twiddle():
 #        real_fh.write(num_to_bin(int(cos_v), width) + "\n")
 #        imag_fh.write(num_to_bin(int(sin_v), width) + "\n")
     
-    addr_w = math.ceil(math.log2(N))
-    num_zeros = 2**addr_w - N
+    addr_w = math.ceil(math.log(N/2,2))
+    num_zeros = int(2**addr_w - N/2)
     print("adding %d zeros" % num_zeros)
     for i in range(num_zeros):
 #        real_fh.write(num_to_bin(0, width) + "\n")

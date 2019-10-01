@@ -39,7 +39,7 @@ module sdft
 
 
     // sample storage
-    reg [DATA_W-1:0] samples [FREQ_BINS-1:0];
+    reg [DATA_W-1:0] samples [2*FREQ_BINS-1:0];
 
     // delta storage (1 more than DATA_Width to handle subtraction)
     reg signed [DATA_W:0] delta;
@@ -153,7 +153,7 @@ module sdft
                 // increment sample index (same as rotating)
                 sample_index <= sample_index + 1;
                 // reset index if it wraps
-                if(sample_index == FREQ_BINS -1)
+                if(sample_index == 2*FREQ_BINS -1)
                     sample_index <= 0;
                 state <= STATE_WAIT;
             end 
