@@ -4,7 +4,7 @@ NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 15
+SEED = 18
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 GEN_TWIDDLE = ../python/gen_twiddle.py 
@@ -42,7 +42,7 @@ debug:
 	gtkwave test.vcd gtk-top.gtkw
 
 debug-ram-mux: 
-	iverilog -DDEBUG -o ram_debug ram_tb.v $(SOURCES)
+	iverilog -DDEBUG -o ram_debug ram_tb.v $(SOURCES) cells_sim.v
 	vvp ram_debug
 	gtkwave test.vcd gtk-ram.gtkw
 

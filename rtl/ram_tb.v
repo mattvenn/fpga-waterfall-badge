@@ -16,7 +16,15 @@ module test;
 
         // test address demux
         w_enable <= 1;
-        for(i = 0; i < 320 * 240; i ++) begin
+        for(i = 0; i < 3 * (2<<14); i ++) begin
+            wdata <= i;
+            addr <= i;
+            #2;
+        end
+
+        #2;
+        w_enable <= 0;
+        for(i = 0; i < 3 * (2<<14); i ++) begin
             wdata <= i;
             addr <= i;
             #2;
