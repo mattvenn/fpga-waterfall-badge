@@ -21,10 +21,16 @@ module top
     output lcd_vsync,
     output lcd_den,
     output lcd_reset,
-
+/*
     output adc_clk,
     output adc_cs,
-    input wire adc_sd
+    input wire adc_sd,
+    */
+
+    output adc_mic_cs,
+    input adc_mic_sd,
+    output adc_mic_clk
+
     
     );
 
@@ -44,9 +50,12 @@ wire [23:0] rgb_data_gradient;  // data coming out of the gradient lookup ROM
 // blank first 2 pixels of each row because the address lookup takes 2 clocks
 assign rgb_data = x < 2 ? 24'b0 : rgb_data_gradient;
 
-// adc
+// adc mic
 wire [SAMPLE_WIDTH-1:0] adc_data;
-wire adc_ready;
+
+// LEDs are a crude level indicator
+assign LEDG_N = ~(adc_data > (1 << 7));
+assign LEDR_N = ~(adc_data > (1 << 9));
 
 // frame buffer reg/wires
 reg frame_buf_wenable = 0;      // ram write enable
@@ -74,10 +83,6 @@ reg [7:0] fft_sample = 0;
 wire fft_ready;
 wire [15:0] bin_out;
 
-// buttons
-assign LEDR_N = BTN_N;
-assign LEDG_N = adc_data[SAMPLE_WIDTH-2];
-  
 // modules
 
 // gradientROM is a 256x24b lookup that stores the gradient colour. This means the frame buffer just has to store single 8b values for each pixel
@@ -86,8 +91,8 @@ gradientROM #(.GRADIENT_FILE(GRADIENT_FILE)) gradientROM_0 (.clk(pixclk), .addr(
 // PLL for the video
 pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 
-// serial ADC. 12b at up to 3MHz
-adc adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd), .ready(adc_ready), .data(adc_data));
+// serial ADC 12b at 1MSPS, run at 10 times slower than clock
+smpladc #(.CKPCK(10)) adc_mic_0 (.i_clk(pixclk), .i_request(1'b1), .i_rd(1'b0), .i_en(1'b1), .o_csn(adc_mic_cs), .o_sck(adc_mic_clk), .i_miso(adc_mic_sd), .o_data(adc_data));
 
 // frame buffer
 ram frame_buffer_0 (.clk(pixclk), .addr(frame_buf_addr), .wdata(frame_buf_wdata), .rdata(frame_buf_rdata), .w_enable(frame_buf_wenable));
@@ -188,8 +193,8 @@ always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-//                fft_sample <= adc_data[7:0];
-                fft_sample <= adc_data[11:4];
+                fft_sample <= adc_data[8:1];
+//                fft_sample <= adc_data[11:4];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;
             end
