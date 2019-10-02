@@ -1,16 +1,18 @@
 PROJECT = fft-lcd
-SOURCES= adc.v lcd_pll.v top.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v 
+SOURCES= adc.v lcd_pll.v top.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v pmodmic3.v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 15
+SEED = 20
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
+GEN_TWIDDLE = ../python/gen_twiddle.py 
 
 all: $(PROJECT).bin
 
 %.json: $(SOURCES)
+	$(GEN_TWIDDLE) 640 8
 	yosys -l yosys.log -p 'synth_ice40 -top top -json $(PROJECT).json' $(SOURCES)
 
 update_luts:
@@ -34,12 +36,13 @@ clean:
 	rm -f ${PROJECT}.json ${PROJECT}.asc ${PROJECT}.bin *log
 
 debug: 
+	$(GEN_TWIDDLE) 64 8
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES) adc_model.v cells_sim.v
 	vvp top_debug
 	gtkwave test.vcd gtk-top.gtkw
 
 debug-ram-mux: 
-	iverilog -DDEBUG -o ram_debug ram_tb.v $(SOURCES)
+	iverilog -DDEBUG -o ram_debug ram_tb.v $(SOURCES) cells_sim.v
 	vvp ram_debug
 	gtkwave test.vcd gtk-ram.gtkw
 

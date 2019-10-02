@@ -59,10 +59,9 @@ set_io -nowarn P1B9       32
 set_io -nowarn P1B10      28
 
 # PMOD 2
-set_io -nowarn adc_cs       26
-set_io -nowarn adc_sd       23
-set_io -nowarn adc_clk      20
-
+set_io -nowarn adc_mic_cs   26
+set_io -nowarn adc_mic_sd   20
+set_io -nowarn adc_mic_clk  18
 
 set_io -nowarn P2_1       27
 set_io -nowarn P2_2       25
