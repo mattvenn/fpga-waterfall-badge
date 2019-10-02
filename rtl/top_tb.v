@@ -37,7 +37,7 @@ module test;
         .H_VISIBLE(64),
         .V_VISIBLE(10),
         .GRADIENT_FILE("GRADIENT_GREY_24.hex")
-        ) top_0( .clock_in(clk), .adc_clk(adc_clk), .adc_cs(adc_cs), .adc_sd(adc_sd));
+        ) top_0( .clock_in(clk), .adc_mic_clk(adc_clk), .adc_mic_cs(adc_cs), .adc_mic_sd(adc_sd));
 
     // period is us 1000 = 0.001s = 1000hz
     adc_model #(.PERIOD(2000)) adc_model_0(.run(run), .clk(adc_clk), .cs(adc_cs), .sd(adc_sd), .done(done));

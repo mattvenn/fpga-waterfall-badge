@@ -101,7 +101,7 @@ module sdft
             // now do the multiplcation to a real number with the dsps
                 bin_real <= frequency_bins_real[bin_addr];
                 bin_imag <= frequency_bins_imag[bin_addr];
-                bin_out <= abs_out >> 5;
+                bin_out <= abs_out >> 1;
 
                 if(read)
                     state <= STATE_READ;

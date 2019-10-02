@@ -17,3 +17,4 @@ date,commit,message,flops,luts,freq
 2019-09-30,31c054a,combine readmes,253,869,22.18
 2019-10-01,60fe887,regen twiddles before make,226,798,24.01
 2019-10-01,60fe887,regen twiddles before make,256,850,23.48
+2019-10-01,7c37dbd,new ram addressing method after SEDA skillshare,256,850,23.48
