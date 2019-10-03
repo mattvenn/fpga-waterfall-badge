@@ -42,6 +42,6 @@ use cordic?
 
 # Want to learn
 
-* feedback in general on code/structure
+* feedback in general on code/structure - done
 * idea about colour changing depending on seed
-* pipeline conversation
+* pipeline conversation - done

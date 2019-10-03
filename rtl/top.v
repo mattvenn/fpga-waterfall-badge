@@ -1,7 +1,7 @@
 `default_nettype none
 module top 
     #(
-    parameter GRADIENT_FILE = "GRADIENT_COLOUR_24.hex",
+    parameter GRADIENT_FILE = "GRADIENT_PURPLE_BLUE_WHITE.hex",
     parameter SAMPLE_WIDTH = 12,    // ADC sample bit depth - actually ADC is only 12 bit
     parameter FREQ_BINS = 640,      // number of frequency bins - must update twiddle rom if changed
     parameter LIMIT_BINS = 320,     // only calculate first 320 bins
