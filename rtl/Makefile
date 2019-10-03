@@ -12,7 +12,7 @@ GEN_TWIDDLE = ../python/gen_twiddle.py
 all: $(PROJECT).bin
 
 %.json: $(SOURCES)
-	$(GEN_TWIDDLE) 640 8
+	$(GEN_TWIDDLE) --bins 640 --width 8 --half
 	yosys -l yosys.log -p 'synth_ice40 -top top -json $(PROJECT).json' $(SOURCES)
 
 update_luts:
@@ -36,7 +36,7 @@ clean:
 	rm -f ${PROJECT}.json ${PROJECT}.asc ${PROJECT}.bin *log
 
 debug: 
-	$(GEN_TWIDDLE) 64 8
+	$(GEN_TWIDDLE) --bins 64 --width 8 --half
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES) adc_model.v cells_sim.v
 	vvp top_debug
 	gtkwave test.vcd gtk-top.gtkw
