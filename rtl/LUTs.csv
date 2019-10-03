@@ -15,3 +15,4 @@ date,commit,message,flops,luts,freq
 2019-09-25,f407f67,"fixed up a few things, and sliced off 1st 2 pixels as addressing is registered",123,389,22.31
 2019-09-25,0adb4c3,"DSPs for fft, screwy output. need to work out if DSPs are configured ok and pipeline delays for output",929,1441,23.88
 2019-09-30,31c054a,combine readmes,253,869,22.18
+2019-10-02,1ac952d,half span working,261,797,25.71

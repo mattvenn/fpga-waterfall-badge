@@ -162,7 +162,7 @@ always @(posedge pixclk) begin
             frame_buf_addr <= freq_bram_bin + (((y_offset << 2 ) + y_offset)<<6);
             frame_buf_wdata <= freq_bram_rdata;
             
-            if(freq_bram_bin == FREQ_BINS) begin
+            if(freq_bram_bin == LIMIT_BINS) begin
                 frame_buf_wenable <= 0;
                 freq_bram_r <= 0;
                 pix_state <= STATE_WAIT_VIDEO;
@@ -220,7 +220,7 @@ always @(posedge pixclk) begin
             freq_bram_w <= 1'b0;
             fft_read <= 1'b0;
             freq_bram_wdata <= bin_out;
-            if(freq_bram_waddr == FREQ_BINS) begin
+            if(freq_bram_waddr == LIMIT_BINS) begin
                 freq_bram_waddr <= 0;
             end
             fft_state <= STATE_FFT_WAIT;

@@ -53,9 +53,11 @@ module sdft
         sample_index = 0;
         delta = 0;
         for(j = 0; j < LIMIT_BINS; j = j + 1)  begin
-            samples[j] <= 0;
             frequency_bins_real[j] <= 0;
             frequency_bins_imag[j] <= 0;
+        end
+        for(j = 0; j < FREQ_BINS; j = j + 1)  begin
+            samples[j] <= 0;
         end
         `endif
         
