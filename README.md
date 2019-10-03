@@ -3,6 +3,12 @@
 LCD datasheet: http://aitendo3.sakura.ne.jp/aitendo_data/product_img/lcd/tft/AT035DL01/LQ035NC111.pdf
 19.5MHz
 
+http://www.comm.toronto.edu/~dimitris/ece431/slidingdft.pdf
+
+https://www.dsprelated.com/showarticle/776.php
+
+PMOD mems ADC interface: https://github.com/ZipCPU/wbpmic/blob/master/rtl/smpladc.v
+
 # Notes
 
 ## abs of complex fft out
@@ -31,4 +37,11 @@ use cordic?
 * rgb driver for incoming amplitude
 * work on colour scheme
 * why does colour scheme change depending on SEED?
-* auto gain control
+* auto gain control, or log output? stop the overflow/wrapping that is happening
+* fix missing first 2 x pix
+
+# Want to learn
+
+* feedback in general on code/structure
+* idea about colour changing depending on seed
+* pipeline conversation

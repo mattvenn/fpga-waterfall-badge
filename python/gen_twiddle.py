@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import sys
 import math
 
@@ -31,22 +32,22 @@ def gen_twiddle():
     real_fh = open("twiddle_real.list", 'w')
     imag_fh = open("twiddle_imag.list", 'w')
     coeffs = []
-    for i in range(int(N)):
-        cos_v = (max_val * math.cos(2*math.pi * i / N))
-        sin_v = (max_val * math.sin(2*math.pi * i / N))
+    for i in range(int(args.bins/args.half)):
+        cos_v = (max_val * math.cos(2*math.pi * i / args.bins))
+        sin_v = (max_val * math.sin(2*math.pi * i / args.bins))
         coeffs.append(complex(cos_v, sin_v))
         print("%7.2f %7.2f -> %s %s" % (cos_v, sin_v, hex3(int(cos_v)), hex3(int(sin_v))))
         real_fh.write(hex3(int(cos_v)) + " // %3d => %d\n" % (i, int(cos_v)))
         imag_fh.write(hex3(int(sin_v)) + " // %3d => %d\n" % (i, int(sin_v)))
-#        real_fh.write(num_to_bin(int(cos_v), width) + "\n")
-#        imag_fh.write(num_to_bin(int(sin_v), width) + "\n")
     
-    addr_w = math.ceil(math.log2(N))
-    num_zeros = 2**addr_w - N
-    print("adding %d zeros" % num_zeros)
+    if args.no_pad:
+        return
+
+    addr_w = math.ceil(math.log(args.bins/args.half,2))
+    file_len = 2**addr_w;
+    num_zeros = int(file_len - args.bins/args.half)
+    print("adding %d zeros to create total length %d" % (num_zeros, file_len))
     for i in range(num_zeros):
-#        real_fh.write(num_to_bin(0, width) + "\n")
-#        imag_fh.write(num_to_bin(0, width) + "\n")
         real_fh.write(hex3(0) + "\n")
         imag_fh.write(hex3(0) + "\n")
     
@@ -54,20 +55,22 @@ def gen_twiddle():
 
 def gen_freq_bram():
     bram_fh = open("freq_bram.list", 'w')
-    for i in range(int(N)):
+    for i in range(int(args.bins)):
         bram_fh.write(hex3(i) + "\n")
 
 
 if __name__ == '__main__':
 
-    if len(sys.argv) != 3:
-        sys.exit("give number bins as first arg, data width as second arg")
+    import argparse
+    parser = argparse.ArgumentParser(description="generate twiddle co-efficients for FFT/SDFT")
+    parser.add_argument('--bins', action='store', type=int, help="how many bins", required=True)
+    parser.add_argument('--width', action='store', type=int, help="data width (signed), max value used will be automatically calculated",required=True)
+    parser.add_argument('--half', action='store_const', const=2, help="only generate first half of bins", default=1)
+    parser.add_argument('--no-pad', action='store_const', const=True, default=False, help="pad file with zeros up to nearest power of 2")
+    args = parser.parse_args()
 
-    N = int(sys.argv[1])
-    width = int(sys.argv[2])
 
-    max_val = (2 ** width - 1)/2
+    max_val = (2 ** args.width - 1)/2
 
     gen_twiddle()
-    print("N: %d, width: %d, max (signed) %d" % (N, width, max_val))
-
+    print("N: %d, width: %d, max (signed) %d" % (args.bins, args.width, max_val))

@@ -2,10 +2,11 @@
 module top 
     #(
     parameter GRADIENT_FILE = "GRADIENT_COLOUR_24.hex",
-    parameter SAMPLE_WIDTH = 12,   // ADC sample bit depth - actually ADC is only 12 bit
-    parameter FREQ_BINS = 320,       // number of frequency bins - must update twiddle rom if changed
-    parameter ADDR_W = 9,          // number of address lines needed for freq bins
-    parameter DATA_W = 8,          // dft internal data width
+    parameter SAMPLE_WIDTH = 12,    // ADC sample bit depth - actually ADC is only 12 bit
+    parameter FREQ_BINS = 640,      // number of frequency bins - must update twiddle rom if changed
+    parameter LIMIT_BINS = 320,     // only calculate first 320 bins
+    parameter ADDR_W = 9,           // number of address lines needed for freq bins
+    parameter DATA_W = 8,           // dft internal data width
     parameter H_VISIBLE = 10'd320,
     parameter V_VISIBLE = 10'd240 
     )
@@ -114,7 +115,7 @@ video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //2
                   .lcd_den(lcd_den));
 
 // sliding dft
-sdft #(.DATA_W(DATA_W), .FREQ_BINS(FREQ_BINS), .FREQ_W(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
+sdft #(.DATA_W(DATA_W), .FREQ_BINS(FREQ_BINS), .LIMIT_BINS(LIMIT_BINS), .FREQ_W(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
 
 // state machine for scrolling pixel buffer
 localparam STATE_RESET      = 1;
@@ -161,7 +162,7 @@ always @(posedge pixclk) begin
             frame_buf_addr <= freq_bram_bin + (((y_offset << 2 ) + y_offset)<<6);
             frame_buf_wdata <= freq_bram_rdata;
             
-            if(freq_bram_bin == FREQ_BINS) begin
+            if(freq_bram_bin == LIMIT_BINS) begin
                 frame_buf_wenable <= 0;
                 freq_bram_r <= 0;
                 pix_state <= STATE_WAIT_VIDEO;
@@ -219,7 +220,7 @@ always @(posedge pixclk) begin
             freq_bram_w <= 1'b0;
             fft_read <= 1'b0;
             freq_bram_wdata <= bin_out;
-            if(freq_bram_waddr == FREQ_BINS) begin
+            if(freq_bram_waddr == LIMIT_BINS) begin
                 freq_bram_waddr <= 0;
             end
             fft_state <= STATE_FFT_WAIT;
