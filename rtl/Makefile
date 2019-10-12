@@ -1,5 +1,5 @@
 PROJECT = fft-lcd
-SOURCES= adc.v lcd_pll.v top.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v pmodmic3.v
+SOURCES= adc.v lcd_pll.v top.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v pmodmic3.v fft-core/*v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf

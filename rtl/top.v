@@ -80,7 +80,7 @@ reg freq_bram_r = 0; // read enable signal
 // dft
 reg fft_start = 0;
 reg fft_read = 0;
-reg [7:0] fft_sample = 0;
+reg [11:0] fft_sample = 0;
 wire fft_ready;
 wire [15:0] bin_out;
 
@@ -115,7 +115,10 @@ video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //2
                   .lcd_den(lcd_den));
 
 // sliding dft
-sdft #(.DATA_W(DATA_W), .FREQ_BINS(FREQ_BINS), .LIMIT_BINS(LIMIT_BINS), .FREQ_W(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
+//sdft #(.DATA_W(DATA_W), .FREQ_BINS(FREQ_BINS), .LIMIT_BINS(LIMIT_BINS), .FREQ_W(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
+reg reset = 1;
+
+fftmain fft_0(.i_clk(pixclk), .i_reset(reset), .i_ce(fft_start), .i_sample({fft_sample,fft_sample}), .o_sync(fft_ready));// , o_result, o_sync);
 
 // state machine for scrolling pixel buffer
 localparam STATE_RESET      = 1;
@@ -189,20 +192,22 @@ localparam STATE_FFT_READ = 3;
 localparam STATE_FFT_READ_WAIT = 4;
 assign P2_1 = fft_start;
 reg [3:0] fft_state = STATE_FFT_WAIT;
+reg [1:0] sample_counter = 0;
 // sample data as fast as possible
 always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
-            if(fft_ready) begin
-                fft_sample <= adc_data[8:1];
-//                fft_sample <= adc_data[11:4];
+            reset <= 0;
+            sample_counter <= sample_counter + 1;
+            if(sample_counter == 0) begin
+                fft_sample <= adc_data; 
                 fft_start <= 1'b1;
-                fft_state <= STATE_FFT_WAIT_START;
-            end
+            end else
+                fft_start <= 1'b0;
         end
 
         STATE_FFT_WAIT_START: begin
-            if(fft_ready == 0)
+            if(fft_ready == 1)
                 fft_state <= STATE_FFT_PROCESS;
         end
 
