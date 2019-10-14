@@ -16,6 +16,8 @@ module top
     output LEDR_N, LEDG_N,
     output P2_1,
     output LED_BLU_N,
+    output LED_RED_N,
+    output LED_GRN_N,
     output lcd_clk,
     output [7:0] lcd_dat,
     output lcd_hsync,
@@ -83,6 +85,12 @@ reg fft_read = 0;
 reg [7:0] fft_sample = 0;
 wire fft_ready;
 wire [15:0] bin_out;
+
+reg [20:0] slow_count = 0;
+assign LED_RED_N = slow_count[20];
+assign LED_GRN_N = ~slow_count[20];
+always @(posedge pixclk)
+    slow_count <= slow_count + 1;
 
 // modules
 
