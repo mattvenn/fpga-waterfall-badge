@@ -22,8 +22,8 @@ module twiddle_rom
     end
 
     always @(posedge clk) begin
-        dout_real = rom_real[addr];
-        dout_imag = rom_imag[addr];
+        dout_real <= rom_real[addr];
+        dout_imag <= rom_imag[addr];
     end
 
 endmodule
