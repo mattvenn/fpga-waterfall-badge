@@ -22,6 +22,7 @@ module sdft
     
     // width of addr needed to address the frequency bins
     localparam BIN_ADDR_W = $clog2(LIMIT_BINS);
+
     localparam SAMP_ADDR_W = $clog2(FREQ_BINS);
 
     // register for the twiddle factor ROM
@@ -49,6 +50,9 @@ module sdft
 
     integer j;
     initial begin
+        $display("LIMIT_BINS %d", LIMIT_BINS);
+        $display("BIN_ADDR_W %d", BIN_ADDR_W);
+        $display("SAMP_ADDR_W %d", SAMP_ADDR_W);
         `ifdef DEBUG
         tw_addr = 0; // can't have initial begin or BRAM won't infer
         sample_index = 0;
