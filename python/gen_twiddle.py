@@ -33,10 +33,16 @@ def gen_twiddle():
     imag_fh = open("twiddle_imag.list", 'w')
     coeffs = []
     for i in range(int(args.bins/args.half)):
-        cos_v = (max_val * math.cos(2*math.pi * i / args.bins))
-        sin_v = (max_val * math.sin(2*math.pi * i / args.bins))
+        if args.log:
+            maxb = math.log2(args.bins+1)
+            angle = 2*math.pi * (1-math.log2(args.bins-i+1)/maxb)
+        else:
+            angle = 2*math.pi * i / args.bins
+
+        cos_v = max_val * math.cos(angle)
+        sin_v = max_val * math.sin(angle)
         coeffs.append(complex(cos_v, sin_v))
-        print("%7.2f %7.2f -> %s %s" % (cos_v, sin_v, hex3(int(cos_v)), hex3(int(sin_v))))
+        print("%7.2f %7.2f -> %s %s (%.2f %.2f error)" % (cos_v, sin_v, hex3(int(round(cos_v,0))), hex3(int(round(sin_v,0))), cos_v-round(cos_v,0), sin_v-round(sin_v,0)))
         real_fh.write(hex3(int(cos_v)) + " // %3d => %d\n" % (i, int(cos_v)))
         imag_fh.write(hex3(int(sin_v)) + " // %3d => %d\n" % (i, int(sin_v)))
     
@@ -67,6 +73,7 @@ if __name__ == '__main__':
     parser.add_argument('--width', action='store', type=int, help="data width (signed), max value used will be automatically calculated",required=True)
     parser.add_argument('--half', action='store_const', const=2, help="only generate first half of bins", default=1)
     parser.add_argument('--no-pad', action='store_const', const=True, default=False, help="pad file with zeros up to nearest power of 2")
+    parser.add_argument('--log', action='store_const', const=True, default=False, help="spread bin frequencies logarithmically instead of linearly")
     args = parser.parse_args()
 
 
