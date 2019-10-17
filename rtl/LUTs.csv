@@ -19,3 +19,5 @@ date,commit,message,flops,luts,freq
 2019-10-01,7c37dbd,new ram addressing method after SEDA skillshare,256,850,23.48
 2019-10-02,1ac952d,half span working,261,797,25.71
 2019-10-03,410d4eb,merge half span, new adc file from Dan G,262,799,25.04
+2019-10-17,d9fdd7b,10bit wide twiddles,303,896,23.99
+2019-10-17,723c2c5,add log scaling LUT between sdft and bram,312,1060,26.16
