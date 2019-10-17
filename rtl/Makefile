@@ -4,15 +4,17 @@ NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 20
+SEED = 21
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 GEN_TWIDDLE = ../python/gen_twiddle.py 
+GEN_SCALE = ../python/gen_scale.py 
 
 all: $(PROJECT).bin
 
 %.json: $(SOURCES)
-	$(GEN_TWIDDLE) --bins 640 --width 10 --half --log
+	$(GEN_TWIDDLE) --bins 640 --width 10 --half  # generate the twiddle lookup
+	$(GEN_SCALE) --fr 12 --to 8 # generate the log scaling lookup
 	yosys -l yosys.log -p 'synth_ice40 -top top -json $(PROJECT).json' $(SOURCES)
 
 update_luts:
