@@ -3,7 +3,9 @@ module top
     #(
     parameter GRADIENT_FILE = "GRADIENT_PURPLE_BLUE_WHITE.hex",
     parameter SAMPLE_WIDTH = 12,    // ADC sample bit depth - actually ADC is only 12 bit
-    parameter FREQ_BINS = 640,      // number of frequency bins - must update twiddle rom if changed
+    parameter FREQ_BINS = 640,      // number of frequency bins - must match makefile
+    parameter TWID_W = 10,          // dft internal twiddle factor width - must match makefile
+    parameter FREQ_W = 16,          // width of SDFT internal frequency bins
     parameter LIMIT_BINS = 320,     // only calculate first 320 bins
     parameter ADDR_W = 9,           // number of address lines needed for freq bins
     parameter DATA_W = 8,           // dft internal data width
@@ -82,9 +84,9 @@ reg freq_bram_r = 0; // read enable signal
 // dft
 reg fft_start = 0;
 reg fft_read = 0;
-reg [7:0] fft_sample = 0;
+reg [DATA_W-1:0] fft_sample = 0;
 wire fft_ready;
-wire [15:0] bin_out;
+wire [FREQ_W-1:0] bin_out;
 
 reg [20:0] slow_count = 0;
 assign LED_RED_N = slow_count[20];
@@ -123,7 +125,7 @@ video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //2
                   .lcd_den(lcd_den));
 
 // sliding dft
-sdft #(.DATA_W(DATA_W), .FREQ_BINS(FREQ_BINS), .LIMIT_BINS(LIMIT_BINS), .FREQ_W(DATA_W*2)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
+sdft #(.DATA_W(DATA_W), .TWID_W(TWID_W), .FREQ_BINS(FREQ_BINS), .LIMIT_BINS(LIMIT_BINS), .FREQ_W(FREQ_W)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 
 
 // state machine for scrolling pixel buffer
 localparam STATE_RESET      = 1;
