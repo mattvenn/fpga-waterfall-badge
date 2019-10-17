@@ -2,6 +2,7 @@
 module top 
     #(
     parameter GRADIENT_FILE = "GRADIENT_PURPLE_BLUE_WHITE.hex",
+    parameter SCALE_FILE = "SCALE.hex",
     parameter SAMPLE_WIDTH = 12,    // ADC sample bit depth - actually ADC is only 12 bit
     parameter FREQ_BINS = 640,      // number of frequency bins - must match makefile
     parameter TWID_W = 10,          // dft internal twiddle factor width - must match makefile
@@ -87,6 +88,7 @@ reg fft_read = 0;
 reg [DATA_W-1:0] fft_sample = 0;
 wire fft_ready;
 wire [FREQ_W-1:0] bin_out;
+wire [DATA_W-1:0] scaled_bin_out;
 
 reg [20:0] slow_count = 0;
 assign LED_RED_N = slow_count[20];
@@ -98,6 +100,9 @@ always @(posedge pixclk)
 
 // gradientROM is a 256x24b lookup that stores the gradient colour. This means the frame buffer just has to store single 8b values for each pixel
 gradientROM #(.GRADIENT_FILE(GRADIENT_FILE)) gradientROM_0 (.clk(pixclk), .addr(frame_buf_rdata), .dout(rgb_data_gradient));
+
+// scalingROM is a 1024x8b lookup that converts from the 10b out of the SDFT to 8b for the frame buffer
+gradientROM #(.GRADIENT_FILE(SCALE_FILE), .addr_width(12), .data_width(DATA_W)) scalingROM_0 (.clk(pixclk), .addr(bin_out > 12'd1023 ? 12'd1023 : bin_out), .dout(scaled_bin_out));
 
 // PLL for the video
 pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
@@ -229,7 +234,7 @@ always @(posedge pixclk) begin
         STATE_FFT_READ: begin
             freq_bram_w <= 1'b0;
             fft_read <= 1'b0;
-            freq_bram_wdata <= bin_out;
+            freq_bram_wdata <= scaled_bin_out;
             if(freq_bram_waddr == LIMIT_BINS) begin
                 freq_bram_waddr <= 0;
             end
