@@ -4,6 +4,7 @@ module sdft
     parameter DATA_W = 8, 
     parameter FREQ_BINS = 64, // 320
     parameter FREQ_W    = 16,
+    parameter TWID_W = 10,
     parameter LIMIT_BINS = 32,
     parameter FILE_REAL = "twiddle_real.list",
     parameter FILE_IMAJ = "twiddle_imag.list"
@@ -33,7 +34,7 @@ module sdft
     wire signed [FREQ_W-1:0] twid_real;
     wire signed [FREQ_W-1:0] twid_imag;
 
-    twiddle_rom #(.ADDR_W(BIN_ADDR_W), .DATA_W(DATA_W)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(twid_real), .dout_imag(twid_imag));
+    twiddle_rom #(.ADDR_W(BIN_ADDR_W), .DATA_W(TWID_W)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(twid_real), .dout_imag(twid_imag));
 
     // frequency bins RAM - these get inferred as BRAMs
     reg signed [FREQ_W-1:0] frequency_bins_real [LIMIT_BINS-1:0];
@@ -85,6 +86,7 @@ module sdft
     assign f3f47 = f3f4 >>> 7;
     wire [FREQ_W-1:0] abs_out;
     abs #(.width(FREQ_W)) abs_0 (.r(bin_real), .i(bin_imag), .a(abs_out));
+    reg [FREQ_W-1:0] fbin_real, fbin_imag;
 
 
     dsp_mult_16 complex_mult_f1 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_real), .X(f1));
@@ -129,8 +131,10 @@ module sdft
 
             STATE_CALC_2: begin
                 // store results
-                frequency_bins_real[tw_addr] <= (f1 - f2)  >>> 7; // divide back by 128 as coefficents are scaled up by 127
-                frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> 7;
+                frequency_bins_real[tw_addr] <= (f1 - f2)  >>> TWID_W-1; // divide back by 1 less than TWID_W as coefficents are scaled up to fill signed width
+                frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> TWID_W-1;
+                fbin_real <= (f1-f2) >>> TWID_W-1;
+                fbin_imag <= (f1-f2) >>> TWID_W-1;
 
                 state <= STATE_CALC_3;
 
