@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Thu Oct 17 14:47:00 2019
+[*] Thu Oct 17 15:50:57 2019
 [*]
 [dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/rtl/test.vcd"
-[dumpfile_mtime] "Thu Oct 17 14:44:37 2019"
-[dumpfile_size] 57242691
+[dumpfile_mtime] "Thu Oct 17 15:50:04 2019"
+[dumpfile_size] 49685846
 [savefile] "/home/matt/work/fpga/fpga-waterfall-badge/rtl/gtk-top.gtkw"
-[timestart] 149000
+[timestart] 4215700
 [size] 1811 1332
 [pos] 442 169
-*-19.000000 906375 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.000000 4424100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
 [treeopen] test.top_0.
 [treeopen] test.top_0.sdft_0.
@@ -75,6 +75,10 @@ test.top_0.gradientROM_0.addr[7:0]
 test.top_0.gradientROM_0.dout[23:0]
 @1000200
 -video
+@22
+test.top_0.scalingROM_0.addr[9:0]
+@23
+test.top_0.scalingROM_0.dout[7:0]
 @200
 -
 @800200
@@ -174,7 +178,6 @@ test.top_0.sdft_0.abs_out[15:0]
 @8420
 >0
 test.top_0.sdft_0.fbin_real[15:0]
-@8421
 test.top_0.sdft_0.fbin_imag[15:0]
 @1000200
 -fft

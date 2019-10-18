@@ -3,7 +3,7 @@ module bram
 #(
     parameter ADDR_W    = 9,
     parameter DATA_W    = 8,
-    parameter FILE      = 0,
+    parameter FILE      = "",
     parameter ZERO      = 0
 )
 (
@@ -13,8 +13,8 @@ module bram
     input wire [ADDR_W-1:0]     w_addr,
     input wire                  w_en,
     input wire                  r_en,
-    input wire [DATA_W-1:0]     d_in,
-    output reg [DATA_W-1:0]     d_out
+    input wire [DATA_W-1:0]     w_data,
+    output reg [DATA_W-1:0]     r_data
 );
 
     reg [DATA_W-1:0] bram [(1 << ADDR_W)-1:0];
@@ -27,18 +27,18 @@ module bram
                 bram[j] = 0;
             end
         `ifdef DEBUG
-        d_out = 0;
+        r_data = 0;
         `endif
     end
 
     always @(posedge w_clk) begin
         if(w_en)
-            bram[w_addr] <= d_in;
+            bram[w_addr] <= w_data;
     end
 
     always @(posedge r_clk) begin
         if(r_en)
-            d_out <= bram[r_addr];
+            r_data <= bram[r_addr];
     end
 
     `ifdef FORMAL
@@ -69,15 +69,15 @@ module bram
             // and at the special address
             &&($past(r_addr == f_addr)))
         // assert the read gives correct answer
-        assert(d_out == $past(f_data));
+        assert(r_data == $past(f_data));
 
     always @(posedge w_clk)
             // if a write  
-            if(w_en
+            if((w_en)
             // and at the special address
             &&(w_addr == f_addr))
         // update the data
-        f_data <= d_in;
+        f_data <= w_data;
     `endif
 
 endmodule
