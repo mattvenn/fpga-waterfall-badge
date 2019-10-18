@@ -99,10 +99,10 @@ always @(posedge pixclk)
 // modules
 
 // gradientROM is a 256x24b lookup that stores the gradient colour. This means the frame buffer just has to store single 8b values for each pixel
-gradientROM #(.GRADIENT_FILE(GRADIENT_FILE)) gradientROM_0 (.clk(pixclk), .addr(frame_buf_rdata), .dout(rgb_data_gradient));
+bram #(.FILE(GRADIENT_FILE)) gradientROM_0 (.r_clk(pixclk), .r_addr(frame_buf_rdata), .d_out(rgb_data_gradient), .r_en(1'b1));
 
 // scalingROM is a 1024x8b lookup that converts from the 10b out of the SDFT to 8b for the frame buffer
-gradientROM #(.GRADIENT_FILE(SCALE_FILE), .addr_width(12), .data_width(DATA_W)) scalingROM_0 (.clk(pixclk), .addr(bin_out > 12'd1023 ? 12'd1023 : bin_out), .dout(scaled_bin_out));
+bram #(.FILE(SCALE_FILE), .ADDR_W(12), .DATA_W(DATA_W)) scalingROM_0 (.r_clk(pixclk), .r_addr(bin_out > 12'd1023 ? 12'd1023 : bin_out), .d_out(scaled_bin_out), .r_en(1'b1));
 
 // PLL for the video
 pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
@@ -111,10 +111,10 @@ pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 smpladc #(.CKPCK(10)) adc_mic_0 (.i_clk(pixclk), .i_request(1'b1), .i_rd(1'b0), .i_en(1'b1), .o_csn(adc_mic_cs), .o_sck(adc_mic_clk), .i_miso(adc_mic_sd), .o_data(adc_data));
 
 // frame buffer
-ram frame_buffer_0 (.clk(pixclk), .addr(frame_buf_addr), .wdata(frame_buf_wdata), .rdata(frame_buf_rdata), .w_enable(frame_buf_wenable));
+spram frame_buffer_0 (.clk(pixclk), .addr(frame_buf_addr), .wdata(frame_buf_wdata), .rdata(frame_buf_rdata), .w_enable(frame_buf_wenable));
 
 // dual ported bram between fft and video
-freq_bram #(.addr_w(ADDR_W), .data_w(DATA_W)) freq_bram_0(.w_clk(pixclk), .r_clk(pixclk), .w_en(freq_bram_w), .r_en(freq_bram_r), .d_in(freq_bram_wdata), .d_out(freq_bram_rdata), .r_addr(freq_bram_bin), .w_addr(freq_bram_waddr));
+bram #(.ADDR_W(ADDR_W), .DATA_W(DATA_W), .ZERO(1'b1)) freq_bram_0(.w_clk(pixclk), .r_clk(pixclk), .w_en(freq_bram_w), .r_en(freq_bram_r), .d_in(freq_bram_wdata), .d_out(freq_bram_rdata), .r_addr(freq_bram_bin), .w_addr(freq_bram_waddr));
 
 // lcd driver
 video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //20.2MHz pixel clock in

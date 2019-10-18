@@ -1,5 +1,5 @@
 `default_nettype none
-module ram 
+module spram 
     #( 
         parameter DATA_W = 8,
         parameter ADDR_W = 17

@@ -1,10 +1,10 @@
 PROJECT = fft-lcd
-SOURCES= adc.v lcd_pll.v top.v ram.v video.v gradient_ROM.v freq_bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v pmodmic3.v
+SOURCES= adc.v lcd_pll.v top.v spram.v video.v bram.v twiddle_rom.v sdft.v dsp_mult.v abs.v pmodmic3.v
 NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 21
+SEED = 22
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 GEN_TWIDDLE = ../python/gen_twiddle.py 
