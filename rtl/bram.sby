@@ -1,0 +1,12 @@
+[options]
+mode prove
+
+[engines]
+smtbmc
+
+[script]
+read -formal bram.v
+prep -top bram
+
+[files]
+bram.v
