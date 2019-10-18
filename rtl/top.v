@@ -107,8 +107,11 @@ bram #(.FILE(SCALE_FILE), .ADDR_W(12), .DATA_W(DATA_W)) scalingROM_0 (.r_clk(pix
 // PLL for the video
 pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 
+wire adc_ready;
+adc adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_mic_clk), .adc_cs(adc_mic_cs), .adc_sd(adc_mic_sd), .ready(adc_ready), .data(adc_data));
+
 // serial ADC 12b at 1MSPS, run at 10 times slower than clock
-smpladc #(.CKPCK(10)) adc_mic_0 (.i_clk(pixclk), .i_request(1'b1), .i_rd(1'b0), .i_en(1'b1), .o_csn(adc_mic_cs), .o_sck(adc_mic_clk), .i_miso(adc_mic_sd), .o_data(adc_data));
+//smpladc #(.CKPCK(10)) adc_mic_0 (.i_clk(pixclk), .i_request(1'b1), .i_rd(1'b0), .i_en(1'b1), .o_csn(adc_mic_cs), .o_sck(adc_mic_clk), .i_miso(adc_mic_sd), .o_data(adc_data));
 
 // frame buffer
 spram frame_buffer_0 (.clk(pixclk), .addr(frame_buf_addr), .w_data(frame_buf_wdata), .r_data(frame_buf_rdata), .w_en(frame_buf_wenable));
@@ -209,7 +212,7 @@ always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-                fft_sample <= adc_data[8:1];
+                fft_sample <= adc_data >> 1;
 //                fft_sample <= adc_data[11:4];
                 fft_start <= 1'b1;
                 fft_state <= STATE_FFT_WAIT_START;

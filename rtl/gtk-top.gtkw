@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Thu Oct 17 15:50:57 2019
+[*] Fri Oct 18 16:27:10 2019
 [*]
 [dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/rtl/test.vcd"
-[dumpfile_mtime] "Thu Oct 17 15:50:04 2019"
-[dumpfile_size] 49685846
+[dumpfile_mtime] "Fri Oct 18 16:26:36 2019"
+[dumpfile_size] 63256731
 [savefile] "/home/matt/work/fpga/fpga-waterfall-badge/rtl/gtk-top.gtkw"
 [timestart] 4215700
 [size] 1811 1332
 [pos] 442 169
-*-17.000000 4424100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.000000 4758625 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
 [treeopen] test.top_0.
 [treeopen] test.top_0.sdft_0.
@@ -25,7 +25,7 @@ test.clk
 test.top_0.video_0.rgb_data[23:0]
 @22
 test.top_0.rgb_data_gradient[23:0]
-@8022
+@24
 test.adc_model_0.sample_data[11:0]
 @200
 -
@@ -38,8 +38,9 @@ test.adc_model_0.sample_data[11:0]
 test.top_0.sdft_0.ready
 @8024
 test.top_0.sdft_0.sample[7:0]
-@22
+@25
 test.top_0.fft_sample[7:0]
+@24
 test.top_0.adc_data[11:0]
 @1000200
 -adc
@@ -65,20 +66,12 @@ test.top_0.lower_blank
 test.top_0.scroll_delay
 test.top_0.freq_bram_r
 @22
-test.top_0.gradientROM_0.dout[23:0]
 test.top_0.frame_buf_rdata[7:0]
 @200
 -
 -gradient rom
-@22
-test.top_0.gradientROM_0.addr[7:0]
-test.top_0.gradientROM_0.dout[23:0]
 @1000200
 -video
-@22
-test.top_0.scalingROM_0.addr[9:0]
-@23
-test.top_0.scalingROM_0.dout[7:0]
 @200
 -
 @800200

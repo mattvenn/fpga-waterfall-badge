@@ -4,7 +4,7 @@ NEXTPNR_DIR = ~/work/fpga/nextpnr
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
-SEED = 43
+SEED = 3
 GIT_MSG = $(shell git log -1 --pretty=%s)
 GIT_CMT = $(shell git log -1 --pretty=%h)
 GEN_TWIDDLE = ../python/gen_twiddle.py 
@@ -39,6 +39,7 @@ clean:
 
 debug: 
 	$(GEN_TWIDDLE) --bins 64 --width 10 --half
+	#$(GEN_TWIDDLE) --bins 640 --width 10 --half  # generate the twiddle lookup
 	iverilog -DDEBUG -o top_debug top_tb.v $(SOURCES) adc_model.v cells_sim.v
 	vvp top_debug
 	gtkwave test.vcd gtk-top.gtkw

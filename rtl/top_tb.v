@@ -35,7 +35,7 @@ module test;
     top #(
         .FREQ_BINS(64), 
         .LIMIT_BINS(32), 
-        .H_VISIBLE(64),
+        .H_VISIBLE(32),
         .V_VISIBLE(10),
         .TWID_W(10),
         .GRADIENT_FILE("GRADIENT_GREY_24.hex")
