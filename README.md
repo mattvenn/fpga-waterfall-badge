@@ -42,6 +42,7 @@ use cordic?
 * fix missing first 2 x pix
 * pipeline
 * formally verifiy
+* add some interactive button pressing stuff to change sample freq or sensitivity
 
 # Want to learn
 
