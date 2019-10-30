@@ -43,6 +43,7 @@ use cordic?
 * pipeline
 * formally verifiy
 * add some interactive button pressing stuff to change sample freq or sensitivity
+* why is there that constant >0 value in the fft about half way through? changed the sample frequency and the line disappears, so maybe it's actually detected or something from the ADC or picking up some interference
 
 # Want to learn
 
