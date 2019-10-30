@@ -36,6 +36,8 @@ module sdft
     wire signed [FREQ_W-1:0] twid_imag;
 
     twiddle_rom #(.ADDR_W(BIN_ADDR_W), .DATA_W(TWID_W)) twiddle_rom_0(.clk(clk), .addr(tw_addr), .dout_real(twid_real), .dout_imag(twid_imag));
+//    bram #(.FILE("twiddle_real.list"), .ADDR_W(BIN_ADDR_W), .DATA_W(TWID_W)) twiddle_real (.r_clk(clk), .r_addr(tw_addr), .r_data_signed(twid_real), .r_en(1'b1));
+//    bram #(.FILE("twiddle_imag.list"), .ADDR_W(BIN_ADDR_W), .DATA_W(TWID_W)) twiddle_imaj (.r_clk(clk), .r_addr(tw_addr), .r_data_signed(twid_imag), .r_en(1'b1));
 
     // frequency bins RAM - these get inferred as BRAMs
     reg signed [FREQ_W-1:0] frequency_bins_real [LIMIT_BINS-1:0];
@@ -83,20 +85,23 @@ module sdft
     reg signed [FREQ_W-1:0] bin_real, bin_imag;
 
     wire signed [31:0] f1, f2, f3, f4;
-    wire signed [32:0] f1f2, f3f4, f1f27, f3f47;
-    assign f1f2 = f1 - f2;
-    assign f3f4 = f3 + f4;
-    assign f1f27 = f1f2 >>> 7;
-    assign f3f47 = f3f4 >>> 7;
+    wire signed [32:0] real_part, imag_part, scaled_real_part, scaled_imag_part;
+    assign real_part = f1 - f2;
+    assign imag_part = f3 + f4;
+    assign scaled_real_part = real_part >>> (TWID_W-1);
+    assign scaled_imag_part = imag_part >>> (TWID_W-1);
     wire [FREQ_W-1:0] abs_out;
     abs #(.width(FREQ_W)) abs_0 (.r(bin_real), .i(bin_imag), .a(abs_out));
     reg [FREQ_W-1:0] fbin_real, fbin_imag;
 
-
+    `ifdef FORMAL // replace multipliers for something else
+        // here
+    `else
     dsp_mult_16 complex_mult_f1 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_real), .X(f1));
-    dsp_mult_16 complex_mult_f2 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + delta), .B(twid_imag), .X(f2));
+    dsp_mult_16 complex_mult_f2 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + 0), .B(twid_imag), .X(f2));
     dsp_mult_16 complex_mult_f3 ( .clock(clk), .A(frequency_bins_real[tw_addr] + delta), .B(twid_imag), .X(f3));
-    dsp_mult_16 complex_mult_f4 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + delta), .B(twid_real), .X(f4));
+    dsp_mult_16 complex_mult_f4 ( .clock(clk), .A(frequency_bins_imag[tw_addr] + 0), .B(twid_real), .X(f4));
+    `endif
     
     always@(posedge clk) begin
         case(state)
@@ -135,10 +140,6 @@ module sdft
 
             STATE_CALC_2: begin
                 // store results
-                frequency_bins_real[tw_addr] <= (f1 - f2)  >>> TWID_W-1; // divide back by 1 less than TWID_W as coefficents are scaled up to fill signed width
-                frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> TWID_W-1;
-                fbin_real <= (f1-f2) >>> TWID_W-1;
-                fbin_imag <= (f1-f2) >>> TWID_W-1;
 
                 state <= STATE_CALC_3;
 
@@ -147,6 +148,11 @@ module sdft
             STATE_CALC_3: begin
                 // wait for twid imag and real to load, and new freq bins
                 // increment tw_addr
+
+                frequency_bins_real[tw_addr] <= (f1 - f2)  >>> (TWID_W-1); // divide back by 1 less than TWID_W as coefficents are scaled up to fill signed width
+                frequency_bins_imag[tw_addr] <= (f3 + f4)  >>> (TWID_W-1);
+                fbin_real <= (f1-f2) >>> (TWID_W-1);
+                fbin_imag <= (f3+f4) >>> (TWID_W-1);
 
                 tw_addr <= tw_addr + 1; 
 
@@ -167,8 +173,14 @@ module sdft
             end 
 
         endcase
-    end
 
+    end
+    `ifdef FORMAL
+        always @(posedge clk) begin
+            assume(start == 0);
+            assert(bin_out == 0);
+        end
+    `endif
 
 endmodule
 
