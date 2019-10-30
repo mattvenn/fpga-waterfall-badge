@@ -11,7 +11,8 @@ module top
     parameter ADDR_W = 9,           // number of address lines needed for freq bins
     parameter DATA_W = 8,           // dft internal data width
     parameter H_VISIBLE = 10'd320,
-    parameter V_VISIBLE = 10'd240 
+    parameter V_VISIBLE = 10'd240,
+    parameter ADC_CLOCK_DIV = 16
     )
     (
     input clock_in,
@@ -107,8 +108,7 @@ bram #(.FILE(SCALE_FILE), .ADDR_W(12), .DATA_W(DATA_W)) scalingROM_0 (.r_clk(pix
 // PLL for the video
 pll pll_0(.clock_in(clock_in), .clock_out(pixclk), .locked(locked));
 
-wire adc_ready;
-adc adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_mic_clk), .adc_cs(adc_mic_cs), .adc_sd(adc_mic_sd), .ready(adc_ready), .data(adc_data));
+adc #(.CLOCK_DIV(ADC_CLOCK_DIV)) adc_inst_0(.clk(pixclk), .reset(1'b0), .adc_clk(adc_mic_clk), .adc_cs(adc_mic_cs), .adc_sd(adc_mic_sd), .data(adc_data));
 
 // serial ADC 12b at 1MSPS, run at 10 times slower than clock
 //smpladc #(.CKPCK(10)) adc_mic_0 (.i_clk(pixclk), .i_request(1'b1), .i_rd(1'b0), .i_en(1'b1), .o_csn(adc_mic_cs), .o_sck(adc_mic_clk), .i_miso(adc_mic_sd), .o_data(adc_data));

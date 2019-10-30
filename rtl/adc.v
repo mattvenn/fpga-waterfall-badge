@@ -8,7 +8,10 @@ clocked out MSB first.
 
 */
 `default_nettype none
-module adc (
+module adc 
+#(
+    parameter CLOCK_DIV = 16
+)(
 	input wire clk,
     input wire reset,
     output wire adc_clk,
@@ -18,16 +21,19 @@ module adc (
     output reg [11:0] data,
     output reg [11:0] max
 );
+    localparam CLOCK_COUNT_WIDTH = $clog2(CLOCK_DIV);
+    reg [CLOCK_COUNT_WIDTH-1:0] clock_div = 0;
 
     initial begin
+        $display("ADC clock div %d width %d", CLOCK_DIV, CLOCK_COUNT_WIDTH);
         ready = 0;
         data = 0;
         max = 0;
     end
 
     // outputs only valid not in reset
-    assign adc_clk = clk;
     assign adc_cs = (cnt == 0 && reset == 0) ? 1 : 0; 
+    assign adc_clk = clock_div[CLOCK_COUNT_WIDTH-1];
 
     reg [11:0] serial_data = 0;
     reg [3:0] cnt = 0;
@@ -42,8 +48,11 @@ module adc (
             cnt <= 0;
             data <= 12'b0;
             ready <= 0;
+            clock_div <= 0;
 
         end else begin
+            clock_div <= clock_div + 1;
+            if(&clock_div) begin
 
             cnt<=cnt+1;
 
@@ -66,6 +75,7 @@ module adc (
             // ready signal is only valid for 1 clock, used for clock enable
             if(cnt == 15) 
                 ready <= 0;
+            end
         end
     end
 

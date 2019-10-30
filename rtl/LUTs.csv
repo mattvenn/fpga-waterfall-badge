@@ -23,3 +23,4 @@ date,commit,message,flops,luts,freq
 2019-10-17,723c2c5,add log scaling LUT between sdft and bram,312,1060,26.16
 2019-10-18,af9ee88,unified bram files,312,1044,25.12
 2019-10-18,b2e2151,go back to my adc code as it works with the adc model,295,1031,24.99
+2019-10-30,78c4900,notes,275,955,25.12

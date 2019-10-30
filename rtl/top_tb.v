@@ -38,6 +38,7 @@ module test;
         .H_VISIBLE(32),
         .V_VISIBLE(10),
         .TWID_W(10),
+        .ADC_CLOCK_DIV(4),
         .GRADIENT_FILE("GRADIENT_GREY_24.hex")
         ) top_0( .clock_in(clk), .adc_mic_clk(adc_clk), .adc_mic_cs(adc_cs), .adc_mic_sd(adc_sd));
 

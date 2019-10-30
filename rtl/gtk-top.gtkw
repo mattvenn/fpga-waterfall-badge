@@ -1,15 +1,15 @@
 [*]
-[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Fri Oct 18 16:27:10 2019
+[*] GTKWave Analyzer v3.3.102 (w)1999-2019 BSI
+[*] Wed Oct 30 17:40:09 2019
 [*]
 [dumpfile] "/home/matt/work/fpga/fpga-waterfall-badge/rtl/test.vcd"
-[dumpfile_mtime] "Fri Oct 18 16:26:36 2019"
-[dumpfile_size] 63256731
+[dumpfile_mtime] "Wed Oct 30 17:36:33 2019"
+[dumpfile_size] 60270869
 [savefile] "/home/matt/work/fpga/fpga-waterfall-badge/rtl/gtk-top.gtkw"
-[timestart] 4215700
+[timestart] 188036
 [size] 1811 1332
 [pos] 442 169
-*-17.000000 4758625 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-10.000000 189572 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] test.
 [treeopen] test.top_0.
 [treeopen] test.top_0.sdft_0.
@@ -33,23 +33,31 @@ test.adc_model_0.sample_data[11:0]
 -
 @800200
 -adc
-@28
-+{start} test.top_0.sdft_0.start
-test.top_0.sdft_0.ready
-@8024
-test.top_0.sdft_0.sample[7:0]
-@25
-test.top_0.fft_sample[7:0]
 @24
-test.top_0.adc_data[11:0]
+test.top_0.adc_inst_0.clock_div[1:0]
+test.top_0.adc_inst_0.cnt[3:0]
+@28
+test.top_0.adc_inst_0.ready
+test.top_0.adc_inst_0.reset
+test.top_0.adc_inst_0.adc_clk
+test.top_0.adc_inst_0.adc_cs
+test.top_0.adc_inst_0.adc_sd
+@24
+test.top_0.adc_inst_0.data[11:0]
 @1000200
 -adc
-@800200
--adc-mic
-@200
--r_output[11:0]
-@1000200
--adc-mic
+@800201
+-adc model
+@29
+test.adc_model_0.clk
+@25
+test.adc_model_0.bit_count[3:0]
+test.adc_model_0.sample_data[11:0]
+@29
+test.adc_model_0.sd
+test.adc_model_0.cs
+@1000201
+-adc model
 @20000
 -
 @800200
