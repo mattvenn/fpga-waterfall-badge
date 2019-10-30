@@ -205,17 +205,19 @@ localparam STATE_FFT_WAIT_START = 1;
 localparam STATE_FFT_PROCESS = 2;
 localparam STATE_FFT_READ = 3;
 localparam STATE_FFT_READ_WAIT = 4;
-assign P2_1 = fft_start;
 reg [3:0] fft_state = STATE_FFT_WAIT;
-// sample data as fast as possible
+reg [7:0] fft_delay = 0; // slow down FFT frequency to zoom in on the lower, more interesting end of the spectrum
+assign P2_1 = fft_start; // debug output to see how fast the FFT is running
 always @(posedge pixclk) begin
     case(fft_state)
         STATE_FFT_WAIT: begin
             if(fft_ready) begin
-                fft_sample <= adc_data >> 1;
-//                fft_sample <= adc_data[11:4];
-                fft_start <= 1'b1;
-                fft_state <= STATE_FFT_WAIT_START;
+                fft_delay <= fft_delay + 1;
+                if (&fft_delay) begin
+                    fft_sample <= adc_data >> 1; // fft_sample <= adc_data[11:4];
+                    fft_start <= 1'b1;
+                    fft_state <= STATE_FFT_WAIT_START;
+                end
             end
         end
 
