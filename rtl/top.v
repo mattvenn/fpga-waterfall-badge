@@ -124,13 +124,13 @@ video #(.H_VISIBLE(H_VISIBLE), .V_VISIBLE(V_VISIBLE)) video_0 (.clk(pixclk), //2
                   .visible(visible),
                   .lower_blank(lower_blank),
                   .resetn(locked),
-                  .lcd_dat(lcd_dat),
-                  .lcd_hsync(lcd_hsync),
-                  .lcd_vsync(lcd_vsync),
+                  .phy_lcd_dat(lcd_dat),
+                  .phy_lcd_hsync(lcd_hsync),
+                  .phy_lcd_vsync(lcd_vsync),
                   .rgb_data(rgb_data),
                   .x(x),
                   .y(y),
-                  .lcd_den(lcd_den));
+                  .phy_lcd_den(lcd_den));
 
 // sliding dft
 sdft #(.DATA_W(DATA_W), .TWID_W(TWID_W), .FREQ_BINS(FREQ_BINS), .LIMIT_BINS(LIMIT_BINS), .FREQ_W(FREQ_W)) sdft_0(.clk (pixclk), .sample(fft_sample), .ready(fft_ready), .start(fft_start), .read(fft_read), .bin_out(bin_out), .bin_addr(freq_bram_waddr)); 

@@ -11,11 +11,69 @@ module video
                 output lower_blank,
                 output [8:0] x,
                 output [7:0] y,
-                output reg [7:0] lcd_dat,
-                output reg lcd_hsync,
-                output reg lcd_vsync,
-                output reg lcd_den);
-              
+                // register all these
+                output wire [7:0] phy_lcd_dat,
+                output wire phy_lcd_hsync,
+                output wire phy_lcd_vsync,
+                output wire phy_lcd_den);
+
+				SB_IO #(
+					.PIN_TYPE(6'b010100),
+					.PULLUP(1'b0),
+					.NEG_TRIGGER(1'b0),
+					.IO_STANDARD("SB_LVCMOS")
+				) iob_lcd_dat [7:0] (
+					.PACKAGE_PIN(phy_lcd_dat),
+					.CLOCK_ENABLE(1'b1),
+					.OUTPUT_CLK(clk),
+					.D_OUT_0(lcd_dat)
+				);
+
+				SB_IO #(
+					.PIN_TYPE(6'b010100),
+					.PULLUP(1'b0),
+					.NEG_TRIGGER(1'b0),
+					.IO_STANDARD("SB_LVCMOS")
+				) iob_lcd_hsync (
+					.PACKAGE_PIN(phy_lcd_hsync),
+					.CLOCK_ENABLE(1'b1),
+					.OUTPUT_CLK(clk),
+					.D_OUT_0(lcd_hsync)
+				);
+
+                // vsync
+				SB_IO #(
+					.PIN_TYPE(6'b010100),
+					.PULLUP(1'b0),
+					.NEG_TRIGGER(1'b0),
+					.IO_STANDARD("SB_LVCMOS")
+				) iob_lcd_vsync (
+					.PACKAGE_PIN(phy_lcd_vsync),
+					.CLOCK_ENABLE(1'b1),
+					.OUTPUT_CLK(clk),
+					.D_OUT_0(lcd_vsync)
+				);
+
+                // den
+				SB_IO #(
+					.PIN_TYPE(6'b010100),
+					.PULLUP(1'b0),
+					.NEG_TRIGGER(1'b0),
+					.IO_STANDARD("SB_LVCMOS")
+				) iob_lcd_den (
+					.PACKAGE_PIN(phy_lcd_den),
+					.CLOCK_ENABLE(1'b1),
+					.OUTPUT_CLK(clk),
+					.D_OUT_0(lcd_den)
+				);
+
+wire phy_lcd_den;
+
+reg [7:0] lcd_dat;
+reg lcd_hsync;
+reg lcd_vsync;
+reg lcd_den;
+
 parameter h_front = 10'd20;
 parameter h_sync = 10'd30;
 parameter h_back = 10'd38;
